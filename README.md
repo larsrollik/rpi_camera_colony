@@ -14,10 +14,9 @@
 [![Downloads](https://pepy.tech/badge/rpi_camera_colony)](https://pepy.tech/project/rpi_camera_colony)
 [comment]: <> ([![Coverage Status]&#40;https://coveralls.io/repos/github/larsrollik/rpi_camera_colony/badge.svg?branch=master&#41;]&#40;https://coveralls.io/github/larsrollik/rpi_camera_colony?branch=master&#41;)
 [comment]: <> ([![Contributions]&#40;https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg&#41;]&#40;https://github.com/larsrollik/rpi_camera_colony)
-
+[![Development Status](https://img.shields.io/pypi/status/rpi_camera_colony.svg)](https://github.com/larsrollik/rpi_camera_colony)
 -->
 
-[![Development Status](https://img.shields.io/pypi/status/rpi_camera_colony.svg)](https://github.com/larsrollik/rpi_camera_colony)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/rpi_camera_colony)](https://github.com/larsrollik/rpi_camera_colony)
 
