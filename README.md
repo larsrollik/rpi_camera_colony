@@ -6,11 +6,11 @@
 -->
 
 <!-- Banners -->
-[![Python Version](https://img.shields.io/pypi/pyversions/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
-[![PyPI](https://img.shields.io/pypi/v/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
-[![Wheel](https://img.shields.io/pypi/wheel/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
+[comment]: <>[![Python Version](https://img.shields.io/pypi/pyversions/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
+[comment]: <>[![PyPI](https://img.shields.io/pypi/v/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
+[comment]: <>[![Wheel](https://img.shields.io/pypi/wheel/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
 [![Development Status](https://img.shields.io/pypi/status/rpi_camera_colony.svg)](https://github.com/larsrollik/rpi_camera_colony)
-[![Tests](https://img.shields.io/github/workflow/status/larsrollik/rpi_camera_colony/tests)](
+[comment]: <>[![Tests](https://img.shields.io/github/workflow/status/larsrollik/rpi_camera_colony/tests)](
     https://github.com/larsrollik/rpi_camera_colony/actions)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/rpi_camera_colony)](https://github.com/larsrollik/rpi_camera_colony)
