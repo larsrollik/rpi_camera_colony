@@ -1,0 +1,4 @@
+prune tests
+prune resources
+prune .github
+recursive-include rpi_camera_colony *.config
