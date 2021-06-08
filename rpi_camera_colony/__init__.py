@@ -20,5 +20,5 @@ stream_handler.setLevel(getattr(logging, level))
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
 
-__version__ = "0.0.2.dev1"
+__version__ = "0.0.2"
 __author__ = "Lars B. Rollik"
