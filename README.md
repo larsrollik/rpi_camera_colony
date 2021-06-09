@@ -221,7 +221,7 @@ from rpi_camera_colony.control.process_sandbox import ControlProcess
 ## Citation
 [doi]: zenodo-doi
 
-> Rollik, L. B. (2021) RPi Camera Colony [doi]
+> Rollik, L. B. (2021) RPi Camera Colony [zenodo doi]
 
 **BibTeX**
 ```BibTeX
@@ -235,7 +235,7 @@ from rpi_camera_colony.control.process_sandbox import ControlProcess
 
 
 ## License
-This software is released under the **[LICENSE](LICENSE)**
+This software is released under the **[LICENSE](https://github.com/larsrollik/rpi_camera_colony/blob/master/LICENSE)**
 
 
 
