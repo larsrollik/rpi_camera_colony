@@ -19,7 +19,7 @@
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/rpi_camera_colony)](https://github.com/larsrollik/rpi_camera_colony)
-
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4916007.svg)](https://doi.org/10.5281/zenodo.4916007)
 
 
 # RPi Camera Colony
@@ -221,21 +221,24 @@ from rpi_camera_colony.control.process_sandbox import ControlProcess
 ## Citation
 [doi]: zenodo-doi
 
-> Rollik, L. B. (2021) RPi Camera Colony [zenodo doi]
+> Rollik, L. B. (2021) RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras [https://doi.org/10.5281/zenodo.4916007](https://doi.org/10.5281/zenodo.4916007)
 
 **BibTeX**
 ```BibTeX
-@misc{RPi Camera Colony,
-    author = {Lars B. Rollik},
-    title = {RPi Camera Colony},
-    howpublished = {\url{https://github.com/larsrollik/rpi_camera_colony}},
-    year = {2021}
+@misc{rollik2021rpi,
+    author       = {Lars B. Rollik},
+    title        = {{RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras}},
+    year         = {2021},
+    month        = jun,
+    publisher    = {Zenodo},
+    url          = {https://doi.org/10.5281/zenodo.4916007},
+    doi          = {10.5281/zenodo.4916007},
   }
 ```
 
 
 ## License
-This software is released under the **[LICENSE](https://github.com/larsrollik/rpi_camera_colony/blob/master/LICENSE)**
+This software is released under the **[BSD 3-Clause License](https://github.com/larsrollik/rpi_camera_colony/blob/master/LICENSE)**
 
 
 
