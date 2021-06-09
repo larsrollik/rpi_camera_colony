@@ -219,7 +219,6 @@ from rpi_camera_colony.control.process_sandbox import ControlProcess
 
 
 ## Citation
-[doi]: zenodo-doi
 
 > Rollik, L. B. (2021) RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras [https://doi.org/10.5281/zenodo.4916007](https://doi.org/10.5281/zenodo.4916007)
 
