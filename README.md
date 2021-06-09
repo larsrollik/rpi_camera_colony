@@ -6,19 +6,24 @@
 -->
 
 <!-- Banners -->
-<!--
-[![Python Version](https://img.shields.io/pypi/pyversions/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4916007.svg)](https://doi.org/10.5281/zenodo.4916007)
+[![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/rpi_camera_colony)](https://github.com/larsrollik/rpi_camera_colony)
+
 [![PyPI](https://img.shields.io/pypi/v/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
 [![Wheel](https://img.shields.io/pypi/wheel/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
+
+<!--
+[![Development Status](https://img.shields.io/pypi/status/rpi_camera_colony.svg)](https://github.com/larsrollik/rpi_camera_colony)
 [![Tests](https://img.shields.io/github/workflow/status/larsrollik/rpi_camera_colony/tests)](
     https://github.com/larsrollik/rpi_camera_colony/actions)
-[![Downloads](https://pepy.tech/badge/rpi_camera_colony)](https://pepy.tech/project/rpi_camera_colony)
-[![Development Status](https://img.shields.io/pypi/status/rpi_camera_colony.svg)](https://github.com/larsrollik/rpi_camera_colony)
+
+[![Python Version](https://img.shields.io/pypi/pyversions/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
 -->
 
+[![Downloads](https://pepy.tech/badge/rpi_camera_colony)](https://pepy.tech/project/rpi_camera_colony)
+
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
-[![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/rpi_camera_colony)](https://github.com/larsrollik/rpi_camera_colony)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4916007.svg)](https://doi.org/10.5281/zenodo.4916007)
+
 
 
 # RPi Camera Colony
