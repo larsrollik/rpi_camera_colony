@@ -75,7 +75,7 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
 
 ### Other useful packages
 **For video conversion:**
-- gpac  # contains MP4Box
+- gpac  # contains MP4Box tool for video conversion
 
 
 
@@ -218,7 +218,7 @@ from rpi_camera_colony.control.process_sandbox import ControlProcess
 
 ## Citation
 
-> Rollik, L. B. (2021) RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras [https://doi.org/10.5281/zenodo.4916007](https://doi.org/10.5281/zenodo.4916007)
+> Rollik, Lars B. (2021). RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras. doi: [10.5281/zenodo.4916007](https://doi.org/10.5281/zenodo.4916007).
 
 **BibTeX**
 ```BibTeX
