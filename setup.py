@@ -23,7 +23,7 @@ setup(
     author="Lars B. Rollik",
     author_email="L.B.Rollik@protonmail.com",
     license=license_text,
-    install_requires=["pyzmq", "tornado", "tqdm", "configobj"],
+    install_requires=["pyzmq", "tornado", "tqdm", "configobj", "numpy"],
     extras_require={
         "dev": [
             "black",
