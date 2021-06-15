@@ -42,7 +42,7 @@ setup(
     entry_points={
         "console_scripts": [
             "rcc_conductor = rpi_camera_colony.control.main:main",
-            "rcc_acquisition = rpi_camera_colony.acquisition.main:main",
+            "rcc_acquisition = rpi_camera_colony.acquisition.__main__:main",
         ],
     },
 )
