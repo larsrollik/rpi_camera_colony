@@ -131,6 +131,20 @@ class RemoteAcquisitionControl(object):
             self.instance_name,
             "--acquisition-name",
             self.config_data["general"]["acquisition_name"],
+            "--data-path",
+            self.config_data["general"]["remote_data_path"],
+            "--max-acquisition-time",
+            self.config_data["general"]["max_acquisition_time"],
+            "--log-ip",
+            self.config_data["log"]["address"],
+            "--log-port",
+            self.config_data["log"]["port"],
+            "--log-level",
+            self.config_data["log"]["level"],
+            "--control-stream-ip",
+            self.config_data["control"]["address"],
+            "--control-stream-port",
+            self.config_data["control"]["port"],
         ]
         execute_in_commandline(cmd=cmd)
 
