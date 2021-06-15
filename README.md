@@ -68,6 +68,7 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
 - pyzmq
 - configobj
 - tqdm
+- numpy
 
 **On RPi only:**
 - picamera
@@ -160,6 +161,10 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
 0. DHCP server on central computer. (Description only for Ubuntu)
     1. Set up static IP address on network interface that serves RPi colony via network switch, with e.g. `/etc/network/interfaces` or `netplan`
     2. Set up DHCP server with [isc-dhcp-server]
+    3. Set up SSH keys to allow interaction with RPi without password (__otherwise cannot drop remote process!__)
+
+            ssh-keygen  # into standard file if not exists, no passphrase
+            ssh-copy-id -i ~/.ssh/id_rsa HOST  # where HOST = RPi host name
 
 1. Set up python environment, e.g. with [miniconda]
 2. Install this package
