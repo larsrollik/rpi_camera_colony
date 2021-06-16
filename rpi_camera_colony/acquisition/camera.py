@@ -146,7 +146,7 @@ class Camera(picamera.PiCamera):
         GPIO.cleanup()
         del self
 
-    def _write_timestamps_ttl_in(self):
+    def _write_timestamps_ttl_in(self, x=None):
         if self.file_timestamps_ttl_in is not None:
             self.file_timestamps_ttl_in.write(f"{self.timestamp}\n")
             logging.debug(f"TTL-in detected at {self.timestamp}")
