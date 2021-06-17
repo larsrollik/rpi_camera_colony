@@ -21,6 +21,12 @@ except ImportError:
     raise ImportError("Failed to import picamera")
 
 
+def _assert_camera_attribute_type(attr=None, val=None):
+    if isinstance(val, list):
+        val = [int(v) for v in val]
+    return val
+
+
 class PiAcquisitionControl(object):
     active = True
 
@@ -151,6 +157,9 @@ class PiAcquisitionControl(object):
         for setting_name, setting_value in config_data.items():
             # Camera config_data
             if hasattr(self.camera, setting_name):
+                setting_value = _assert_camera_attribute_type(
+                    attr=setting_name, val=setting_value
+                )
                 setattr(self.camera, setting_name, setting_value)
                 logging.debug(f"setattr(self.camera, {setting_name}, {setting_value})")
 
