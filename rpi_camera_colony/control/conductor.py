@@ -67,7 +67,7 @@ class Conductor(object):
         auto_init=False,
         auto_init_remote=True,
         delay_for_networking=4,
-        delay_for_remote_instance=4,
+        delay_for_remote_instance=6,
     ):
         """ """
         super(Conductor, self).__init__()

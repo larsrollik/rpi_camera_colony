@@ -22,7 +22,7 @@ def main():
     )
 
     conductor = Conductor(
-        config_file=args.settings_file,
+        config_file=args.config_data_file,
         acquisition_name=args.acquisition_name,
         auto_init=False,
     )

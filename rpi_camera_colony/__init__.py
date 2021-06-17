@@ -4,7 +4,7 @@
 # License: BSD 3-Clause
 import logging
 
-level = "INFO"
+level = "DEBUG"
 logger = logging.getLogger()
 logger.setLevel(getattr(logging, level))
 

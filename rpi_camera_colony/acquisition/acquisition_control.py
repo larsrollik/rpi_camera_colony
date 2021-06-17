@@ -22,7 +22,8 @@ except ImportError:
 
 
 def _assert_camera_attribute_type(attr=None, val=None):
-    if isinstance(val, list):
+    logging.debug("IN ATTRIBUTE ASSERTION")
+    if "color_effects" in attr:  #isinstance(val, list):
         val = [int(v) for v in val]
     return val
 

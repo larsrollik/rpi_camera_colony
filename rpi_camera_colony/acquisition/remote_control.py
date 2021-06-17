@@ -146,6 +146,7 @@ class RemoteAcquisitionControl(object):
             "--control-stream-port",
             self.config_data["control"]["port"],
         ]
+        cmd = [str(c) for c in cmd]  # assert string
         execute_in_commandline(cmd=cmd)
 
         logging.debug(
