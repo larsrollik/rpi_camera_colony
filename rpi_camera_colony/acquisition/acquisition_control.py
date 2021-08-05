@@ -126,7 +126,7 @@ class PiAcquisitionControl(object):
     def _make_acquisition_paths(self):
         # Paths
         recording_name = "__".join(
-            [self.acquisition_name, get_datestr(), self.instance_name]
+            [self.acquisition_name, f"local_get_datestr()", self.instance_name]
         )
         acquisition_file_base = Path(self.data_path) / recording_name / recording_name
         acquisition_file_base.parent.mkdir(parents=True, exist_ok=True)

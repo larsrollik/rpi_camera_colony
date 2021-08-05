@@ -31,6 +31,13 @@ def parse_args_for_conductor():
         default="default_acq_name_parser",
         help="Acquisition name [only name; path on Conductor should be defined in config]",
     )
+    parser.add_argument(
+        "--inherit-time",
+        "-t",
+        action="store_true",
+        dest="inherit_time",
+        default=True,
+    )
     return parser.parse_args()
 
 
@@ -44,6 +51,7 @@ class Conductor(object):
     _acquisition_controllers = {}
     acquiring = False
 
+    inherit_time = True
     auto_init = False
     auto_init_remote = True
 
@@ -64,12 +72,13 @@ class Conductor(object):
         config_file=None,
         acquisition_name=None,
         logging_stream_callback=None,
+        inherit_time=True,
         auto_init=False,
         auto_init_remote=True,
         delay_for_networking=4,
         delay_for_remote_instance=6,
     ):
-        """ """
+        """Create new Acquisition Conductor."""
         super(Conductor, self).__init__()
 
         self.config_file = config_file
@@ -83,15 +92,21 @@ class Conductor(object):
         self._logging_stream_callback = (
             logging_stream_callback or self._callback_receiver
         )
+        self.inherit_time = inherit_time
         self.auto_init = auto_init
         self.auto_init_remote = auto_init_remote
 
+        # Process arguments
         if not self.acquisition_name:
             self.acquisition_name = self.config_data["general"].get(
                 "acquisition_name", "default_acq_name_get"
             )
-        else:
-            self.config_data["general"]["acquisition_name"] = self.acquisition_name
+
+        if self.inherit_time:
+            self.acquisition_name = "__".join([self.acquisition_name, get_datestr()])
+            self.config_data["general"]["inherit_time"] = self.inherit_time
+
+        self.config_data["general"]["acquisition_name"] = self.acquisition_name
 
         self._log_to_file = self.config_data["log"].get("log_to_file")
         self._log_to_console = self.config_data["log"].get("log_to_console")
