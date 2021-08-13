@@ -89,6 +89,12 @@ def parse_args_for_piacquisitioncontrol():
         type=int,
         help="Port for control stream",
     )
+    parser_acq_ctrl.add_argument(
+        "--auto-start",
+        "-a",
+        default=True,
+        action="store_true",
+    )
     return parser.parse_args()
 
 
@@ -131,6 +137,11 @@ def main():
 
         time.sleep(2)
         start_time = time.time()
+
+        # if args.auto_start:
+        #     logging.debug("AUTO STARTING PiAcquisitionControl.")
+        #     c._update_camera_status(new_status="reset")
+        #     c._update_camera_status(new_status="start")
 
         while (time.time() - start_time) < max_time and c.active:
             try:

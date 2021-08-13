@@ -21,13 +21,6 @@ except ImportError:
     raise ImportError("Failed to import picamera")
 
 
-def _assert_camera_attribute_type(attr=None, val=None):
-    logging.debug("IN ATTRIBUTE ASSERTION")
-    if "color_effects" in attr:  #isinstance(val, list):
-        val = [int(v) for v in val]
-    return val
-
-
 class PiAcquisitionControl(object):
     active = True
 
@@ -131,9 +124,9 @@ class PiAcquisitionControl(object):
         acquisition_file_base = Path(self.data_path) / recording_name / recording_name
         acquisition_file_base.parent.mkdir(parents=True, exist_ok=True)
         if not acquisition_file_base.parent.exists():
-            raise FileNotFoundError(
-                f"Tried to make dir {str(acquisition_file_base.parent)}, but not found on check."
-            )
+            err_msg = f"Tried to make dir {str(acquisition_file_base.parent)}, but not found on check."
+            logging.error(err_msg)
+            raise FileNotFoundError(err_msg)
         self.acquisition_file_base = str(acquisition_file_base)
         self.acquisition_files = make_recording_file_names(
             path=self.acquisition_file_base
@@ -158,9 +151,6 @@ class PiAcquisitionControl(object):
         for setting_name, setting_value in config_data.items():
             # Camera config_data
             if hasattr(self.camera, setting_name):
-                setting_value = _assert_camera_attribute_type(
-                    attr=setting_name, val=setting_value
-                )
                 setattr(self.camera, setting_name, setting_value)
                 logging.debug(f"setattr(self.camera, {setting_name}, {setting_value})")
 

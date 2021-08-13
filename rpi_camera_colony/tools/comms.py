@@ -3,6 +3,7 @@
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
 import logging
+import os
 import subprocess
 from threading import Thread
 
@@ -18,6 +19,32 @@ allowed_zmq_patterns = {
     "PUB": zmq.PUB,
     "SUB": zmq.SUB,
 }
+
+
+def find_available_port(
+    start_port=None,
+    ip_address=None,
+    protocol="tcp",
+    allowed_port_range=10,
+    pattern="PUB",
+):
+    """Check safely if chosen port range is available."""
+    start_port = int(start_port)
+    c = zmq.Context()
+
+    available_port = None
+    while available_port is None and start_port <= start_port + allowed_port_range:
+        try:
+            s = c.socket(allowed_zmq_patterns[pattern])
+            s.bind(f"{protocol}://{ip_address}:{start_port}")
+            available_port = start_port
+            s.close()
+        except zmq.ZMQError:
+            start_port += 1
+            continue
+
+    c.term()
+    return available_port
 
 
 class SocketCommunication:
@@ -64,11 +91,22 @@ class SocketCommunication:
         if auto_open:
             self.open()
 
-    def open(self):
+    def open(self, force_open=False):
         logging.debug(
             f"{'Binding' if self.bind_bool else 'Connecting'} {self.pattern} socket on {self.full_address}."
         )
 
+        if self.context is not None and not self.socket.closed:
+            if not force_open:
+                logging.debug(
+                    "Already open. Not allowed to close and re-open. Use 'force_open=True' in call to open()"
+                )
+                return
+            else:
+                self.close()
+                logging.debug(f"Trying to re-open connection on {self.full_address}")
+
+        # OPENING
         self.context = zmq.Context()
         self.socket = self.context.socket(allowed_zmq_patterns.get(self.pattern))
         if self.bind_bool:
@@ -135,10 +173,20 @@ class SocketCommunication:
         received_array = np.frombuffer(buf, dtype=received_metadata["dtype"])
         return received_metadata, received_array.reshape(received_metadata["shape"])
 
+    def close(self):
+        if self.socket is not None and not self.socket.closed:
+            self.socket.close()
+            self.socket = None
+            logging.debug(f"Socket closed for {self.full_address}")
+
+        if self.context is not None:
+            self.context.term()
+            self.context = None
+            logging.debug(f"Context closed for {self.full_address}")
+
     def __del__(self):
         try:
-            self.socket.close()
-            self.context.term()
+            self.close()
         except zmq.ZMQBaseError:
             logging.warning(
                 f"ZMQBaseError on closing of command_socket/context of {self.full_address}"
@@ -191,10 +239,18 @@ class ListenerStream(Thread):
         self.ioloop.start()
 
     def stop(self):
-        self.ioloop.stop()
+        for s, h in self.stream_dict.items():
+            h.on_recv = None
+            h.close(0)
+
+        # self.ioloop.stop()
+        # self.ioloop.clear_current()
+        # self.ioloop = None
 
 
 def execute_in_commandline(cmd=None, return_std=False, **kwargs):
+    # kwargs.update({"preexec_fn": os.setsid})
+
     if return_std:
         kwargs.update(
             {
@@ -210,4 +266,7 @@ def execute_in_commandline(cmd=None, return_std=False, **kwargs):
             }
         )
 
-    subprocess.Popen(cmd, **kwargs)
+    return subprocess.Popen(
+        cmd,
+        **kwargs,
+    )

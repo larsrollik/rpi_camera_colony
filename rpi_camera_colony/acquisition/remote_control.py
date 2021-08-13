@@ -157,7 +157,8 @@ class RemoteAcquisitionControl(object):
 
     def pkill_remote(self):
         cmd = self._make_pi_command_base_list() + ["pkill", "python"]
-        execute_in_commandline(cmd=cmd)
+        execute_in_commandline(cmd=cmd, return_std=False)
+        time.sleep(0.1)
 
     def start_acquisition(self):
         self.transmit_settings()
@@ -170,9 +171,12 @@ class RemoteAcquisitionControl(object):
         time.sleep(0.5)
 
     def cleanup(self):
-        self.send_command(cmd_type="command", message_dict={"status": "close"})
-        time.sleep(0.5)
-        self.connected = False
+        try:
+            self.send_command(cmd_type="command", message_dict={"status": "close"})
+            time.sleep(0.5)
+            self.connected = False
+        except BaseException:
+            print("FAILED TO CLEAN UP REMOTE CONTROLLER")
 
     def __del__(self):
         self.cleanup()

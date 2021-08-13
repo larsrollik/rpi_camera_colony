@@ -29,7 +29,9 @@ def load_config(config_path=None, config_spec_path=None):
     if not config_spec_path.exists():
         raise FileNotFoundError(f"File {config_spec_path} not found.")
 
-    config = ConfigObj(infile=str(config_path), configspec=str(config_spec_path))
+    config = ConfigObj(
+        infile=str(config_path), configspec=str(config_spec_path), unrepr=True
+    )
 
     validation_success = config.validate(Validator(), copy=True)
     if not validation_success:

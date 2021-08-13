@@ -16,7 +16,7 @@ remote_pip_command="$remote_pip install -e "
 repo_name=$(basename $code_dir)
 
 # Rsync
-parallel -j 8 rsync -av $code_dir "{1}:$remote_code_dir" --exclude=".git" --exclude="__pycache__" --exclude=".idea" --exclude="tests" --exclude="*.egg-info" ::: rpi-red60 rpi-yellow61 rpi-blue62
+parallel -j 8 rsync -av $code_dir "{1}:$remote_code_dir" --exclude=".git" --exclude="__pycache__" --exclude=".idea" --exclude="tests" --exclude="*.egg-info" ::: testrpi
 
 # (Re-)Install
-parallel -j 8 ssh {1} sudo nohup "${remote_pip_command} ${remote_code_dir}/${repo_name}[rpi]" ::: rpi-red60 rpi-yellow61 rpi-blue62
+parallel -j 8 ssh {1} sudo nohup "${remote_pip_command} ${remote_code_dir}/${repo_name}[rpi]" ::: testrpi

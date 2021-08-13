@@ -7,8 +7,11 @@ import logging
 import time
 from pathlib import Path
 
+import zmq
+
 from rpi_camera_colony.acquisition.remote_control import RemoteAcquisitionControl
 from rpi_camera_colony.config.config import load_config
+from rpi_camera_colony.tools.comms import find_available_port
 from rpi_camera_colony.tools.comms import ListenerStream
 from rpi_camera_colony.tools.comms import SocketCommunication
 from rpi_camera_colony.tools.files import close_file_safe
@@ -18,7 +21,7 @@ from rpi_camera_colony.tools.files import get_datestr
 def parse_args_for_conductor():
     parser = argparse.ArgumentParser(description="Input arguments")
     parser.add_argument(
-        "--config-data-file",
+        "--config-file",
         "-c",
         type=str,
         default=Path(__file__).parent.parent / "config/example.config",
@@ -134,6 +137,22 @@ class Conductor(object):
         self.config_data = load_config(config_path=self.config_file)
 
     def _open_network_comms(self):
+        # Find available socket ports
+        start_port = int(self.config_data["log"].get("port"))
+        address = self.config_data["log"].get("address")
+        available_port_logging = find_available_port(
+            start_port=start_port, ip_address=address
+        )
+        start_port = int(self.config_data["control"].get("port"))
+        address = self.config_data["control"].get("address")
+        available_port_control = find_available_port(
+            start_port=start_port, ip_address=address
+        )
+
+        assert available_port_logging is not None and available_port_control is not None
+        self.config_data["log"]["port"] = available_port_logging
+        self.config_data["control"]["port"] = available_port_control
+
         # Logging
         self._logging_socket = SocketCommunication(
             address=self.config_data["log"].get("address"),
@@ -215,6 +234,10 @@ class Conductor(object):
         if not self.acquiring:
             logging.info("Acquisition was not running.")
 
+        if not bool(self._acquisition_controllers):
+            logging.info("")
+            return
+
         for _, acq in self._acquisition_controllers.items():
             acq.stop_acquisition()
 
@@ -241,6 +264,11 @@ class Conductor(object):
         self._acquisition_controllers = []
         if self._comms_stream is not None:
             self._comms_stream.stop()
+            time.sleep(0.5)
+            self._comms_stream = None
+
+        self._logging_socket.close()
+        self._control_socket.close()
 
         self.__cleaned_up = True
         self.active = False
