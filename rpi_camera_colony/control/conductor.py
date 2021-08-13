@@ -19,7 +19,10 @@ from rpi_camera_colony.tools.files import get_datestr
 
 
 def parse_args_for_conductor():
-    parser = argparse.ArgumentParser(description="Input arguments")
+    parser = argparse.ArgumentParser(
+        description="Input arguments",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.add_argument(
         "--config-file",
         "-c",
