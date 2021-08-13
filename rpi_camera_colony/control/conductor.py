@@ -34,13 +34,6 @@ def parse_args_for_conductor():
         default="default_acq_name_parser",
         help="Acquisition name [only name; path on Conductor should be defined in config]",
     )
-    parser.add_argument(
-        "--inherit-time",
-        "-t",
-        action="store_true",
-        dest="inherit_time",
-        default=True,
-    )
     return parser.parse_args()
 
 
@@ -54,7 +47,6 @@ class Conductor(object):
     _acquisition_controllers = {}
     acquiring = False
 
-    inherit_time = True
     auto_init = False
     auto_init_remote = True
 
@@ -75,7 +67,6 @@ class Conductor(object):
         config_file=None,
         acquisition_name=None,
         logging_stream_callback=None,
-        inherit_time=True,
         auto_init=False,
         auto_init_remote=True,
         delay_for_networking=4,
@@ -95,7 +86,6 @@ class Conductor(object):
         self._logging_stream_callback = (
             logging_stream_callback or self._callback_receiver
         )
-        self.inherit_time = inherit_time
         self.auto_init = auto_init
         self.auto_init_remote = auto_init_remote
 
@@ -104,12 +94,15 @@ class Conductor(object):
             self.acquisition_name = self.config_data["general"].get(
                 "acquisition_name", "default_acq_name_get"
             )
-
-        if self.inherit_time:
-            self.acquisition_name = "__".join([self.acquisition_name, get_datestr()])
-            self.config_data["general"]["inherit_time"] = self.inherit_time
-
+        acq_name_parts = self.acquisition_name.split("__")
         self.config_data["general"]["acquisition_name"] = self.acquisition_name
+        acq_group = acq_name_parts[0]
+        acq_time = acq_name_parts[1] if len(acq_name_parts) > 1 else get_datestr()
+        self.config_data["general"]["acquisition_group"] = acq_group
+        self.config_data["general"]["acquisition_time"] = acq_time
+        for c in self.config_data["controllers"].keys():
+            self.config_data["controllers"][c]["acquisition_time"] = acq_time
+            self.config_data["controllers"][c]["acquisition_group"] = acq_group
 
         self._log_to_file = self.config_data["log"].get("log_to_file")
         self._log_to_console = self.config_data["log"].get("log_to_console")

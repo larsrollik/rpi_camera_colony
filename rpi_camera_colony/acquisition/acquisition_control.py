@@ -36,10 +36,13 @@ class PiAcquisitionControl(object):
     instance_name = get_local_ip_address()
     data_path = "/home/pi/data/"
     acquisition_name = "test_recording"
+    acquisition_group = "test_group"
+    acquisition_time = get_datestr()
     acquisition_file_base = None
     acquisition_files = None
     acquisition_settings = {}
     video_quality = 23
+    save_data = True
 
     def __init__(
         self,
@@ -120,9 +123,14 @@ class PiAcquisitionControl(object):
     def _make_acquisition_paths(self):
         # Paths
         recording_name = "__".join(
-            [self.acquisition_name, f"local_{get_datestr()}", self.instance_name]
+            [self.acquisition_name, self.instance_name, f"dt_{get_datestr()}"]
         )
-        acquisition_file_base = Path(self.data_path) / recording_name / recording_name
+        acquisition_file_base = (
+            Path(self.data_path)
+            / self.acquisition_group
+            / self.acquisition_name
+            / recording_name
+        )
         acquisition_file_base.parent.mkdir(parents=True, exist_ok=True)
         if not acquisition_file_base.parent.exists():
             err_msg = f"Tried to make dir {str(acquisition_file_base.parent)}, but not found on check."

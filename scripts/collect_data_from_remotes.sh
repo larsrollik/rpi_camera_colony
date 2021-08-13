@@ -12,11 +12,11 @@
 data_path_local=${1:-"$HOME/data/"}
 data_path_remote=${2:-"/home/pi/data/"}
 
-for remote_host in "rpi-red60" "rpi-yellow61" "rpi-blue62"  # ! CHANGE names, e.g. to .ssh/config host definitions
+for remote_host in "testrpi"  # ! CHANGE names, e.g. to .ssh/config host definitions
 do
   printf "\n\n\n======================================= $remote_host \n"
 
-  local_data_for_this_remote="${data_path_local}/video/${remote_host}/"
+  local_data_for_this_remote="${data_path_local}/"  # video/${remote_host}
   printf $local_data_for_this_remote
   mkdir -p "$local_data_for_this_remote"
 
