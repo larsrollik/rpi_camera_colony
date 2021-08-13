@@ -308,6 +308,9 @@ This software is released under the **[BSD 3-Clause License](https://github.com/
 
 ## Specific install hints
 
+### HQ camera for RPi cannot acquire at resolutions or framerates outlined in the technical description
+`sudo rpi-update` fixes this. - Be careful, this updates the RPi firmware and might have unexpected side effects!
+
 ### Ip forwarding and routing on central machine
 
 ```bash
