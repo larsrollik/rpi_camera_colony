@@ -13,7 +13,7 @@ with open(path.join(this_directory, "LICENSE")) as f:
 
 setup(
     name="rpi_camera_colony",
-    version="0.1.3",
+    version="0.2.0.dev0",
     description="RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras",
     long_description=long_description,
     long_description_content_type="text/markdown",
