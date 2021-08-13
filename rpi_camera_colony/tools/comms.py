@@ -191,6 +191,8 @@ class SocketCommunication:
             logging.warning(
                 f"ZMQBaseError on closing of command_socket/context of {self.full_address}"
             )
+        except BaseException:
+            logging.warning(f"Unknown error on del of {self.full_address}")
 
 
 class ListenerStream(Thread):

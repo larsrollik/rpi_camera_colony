@@ -30,7 +30,10 @@ def load_config(config_path=None, config_spec_path=None):
         raise FileNotFoundError(f"File {config_spec_path} not found.")
 
     config = ConfigObj(
-        infile=str(config_path), configspec=str(config_spec_path), unrepr=True
+        infile=str(config_path),
+        configspec=str(config_spec_path),
+        unrepr=True,
+        list_values=True,
     )
 
     validation_success = config.validate(Validator(), copy=True)

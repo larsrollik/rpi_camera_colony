@@ -14,6 +14,7 @@ except ImportError:
         "Can only run camera module on Raspberry Pi with RPi.GPIO and picamera packages installed."
     )
 from rpi_camera_colony.tools.files import close_file_safe
+from rpi_camera_colony.tools.files import DummyFileObject
 
 GPIO.setwarnings(False)
 GPIO.cleanup()
@@ -156,6 +157,11 @@ class Camera(picamera.PiCamera):
             self.file_timestamps_ttl_out.write(f"{cam_ts},{frame_ts}\n")
 
     def start_recording(self, output_files=None, **kwargs):
+        if isinstance(output_files["video"], DummyFileObject):
+            logging.debug("Not allowed to write output files.")
+            self.ttl_out_pin = None
+            self.ttl_in_pin = None
+
         if self.ttl_out_pin is not None:
             # Open TTL file and write header
             self.file_timestamps_ttl_out = open(output_files["ttl_out"], "w")

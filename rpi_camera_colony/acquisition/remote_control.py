@@ -102,6 +102,20 @@ class RemoteAcquisitionControl(object):
         settings_for_this_instance = self.config_data["controllers"].get(
             self.instance_name
         )
+
+        # Patch general overwrite into controller settings
+        general_setting_has_priority = self.config_data["general"][
+            "general_setting_has_priority"
+        ]
+        general_settings_to_patch_into_controller = self.config_data["general"][
+            "general_settings_to_patch_into_controller"
+        ]
+        if general_setting_has_priority:
+            for key in general_settings_to_patch_into_controller:
+                overwrite_value = self.config_data["general"].get(key)
+                settings_for_this_instance.update({key: overwrite_value})
+
+        # Send
         self.send_command(
             cmd_type="config",
             message_dict=settings_for_this_instance,

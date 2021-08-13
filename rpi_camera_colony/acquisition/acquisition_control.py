@@ -9,6 +9,7 @@ from pathlib import Path
 from rpi_camera_colony.config.config import get_local_ip_address
 from rpi_camera_colony.tools.comms import ListenerStream
 from rpi_camera_colony.tools.comms import SocketCommunication
+from rpi_camera_colony.tools.files import DummyFileObject
 from rpi_camera_colony.tools.files import get_datestr
 from rpi_camera_colony.tools.files import make_recording_file_names
 
@@ -166,8 +167,13 @@ class PiAcquisitionControl(object):
             self.camera.preview_static()
 
         elif new_status in "start":
-            self._make_acquisition_paths()
-            self._write_metadata_file()
+
+            if not self.save_data:
+                logging.debug("Requested to run without saving data.")
+                self.acquisition_files["video"] = DummyFileObject()
+            else:
+                self._make_acquisition_paths()
+                self._write_metadata_file()
 
             self.camera.start_recording(
                 output_files=self.acquisition_files,

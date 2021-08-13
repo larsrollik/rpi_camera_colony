@@ -38,3 +38,20 @@ def close_file_safe(file_handle):
         logging.debug(f"Closed file:{name}")
     except BaseException:
         logging.debug(f"FAILED TO CLOSE FILE:{name}")
+
+
+class DummyFileObject(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def write(self):
+        pass
+
+    def flush(self):
+        pass
+
+    def open(self):
+        pass
+
+    def close(self):
+        pass
