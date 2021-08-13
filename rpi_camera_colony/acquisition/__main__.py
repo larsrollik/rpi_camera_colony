@@ -14,6 +14,7 @@ import rpi_camera_colony
 from rpi_camera_colony.config.config import get_local_ip_address
 from rpi_camera_colony.config.config import setup_logging
 from rpi_camera_colony.tools.comms import SocketCommunication
+from rpi_camera_colony.tools.files import get_datestr
 
 
 def parse_args_for_piacquisitioncontrol():
@@ -47,7 +48,7 @@ def parse_args_for_piacquisitioncontrol():
     parser_acq_ctrl.add_argument(
         "--acquisition-name",
         "-n",
-        default="test_recording",
+        default="test_recording__" + get_datestr(),
         type=str,
         help="Base name for recording folder and files.",
     )
@@ -92,7 +93,7 @@ def parse_args_for_piacquisitioncontrol():
     parser_acq_ctrl.add_argument(
         "--auto-start",
         "-a",
-        default=True,
+        default=False,
         action="store_true",
     )
     return parser.parse_args()
@@ -138,10 +139,10 @@ def main():
         time.sleep(2)
         start_time = time.time()
 
-        # if args.auto_start:
-        #     logging.debug("AUTO STARTING PiAcquisitionControl.")
-        #     c._update_camera_status(new_status="reset")
-        #     c._update_camera_status(new_status="start")
+        if args.auto_start:
+            logging.debug("AUTO STARTING PiAcquisitionControl.")
+            c._update_camera_status(new_status="reset")
+            c._update_camera_status(new_status="start")
 
         while (time.time() - start_time) < max_time and c.active:
             try:

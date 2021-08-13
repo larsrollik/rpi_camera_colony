@@ -15,14 +15,18 @@ def get_datestr():
 def make_recording_file_names(
     path=None, package_id="rcc", ext_sep=".", video_ext="h264"
 ):
-    basepath, _ = os.path.splitext(str(path))
+    # basepath, _ = os.path.splitext(str(path))
+    basepath = str(path)
+    dt = get_datestr()
     return {
         "video": ext_sep.join(
-            [basepath, package_id, "video", str(video_ext).replace(".", "")]
+            [basepath, dt, package_id, "video", str(video_ext).replace(".", "")]
         ),
-        "ttl_out": ext_sep.join([basepath, package_id, "timestamps_ttl_out", "csv"]),
-        "ttl_in": ext_sep.join([basepath, package_id, "timestamps_ttl_in", "csv"]),
-        "metadata": ext_sep.join([basepath, package_id, "metadata", "json"]),
+        "ttl_out": ext_sep.join(
+            [basepath, dt, package_id, "timestamps_ttl_out", "csv"]
+        ),
+        "ttl_in": ext_sep.join([basepath, dt, package_id, "timestamps_ttl_in", "csv"]),
+        "metadata": ext_sep.join([basepath, dt, package_id, "metadata", "json"]),
     }
 
 

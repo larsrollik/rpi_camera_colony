@@ -122,9 +122,7 @@ class PiAcquisitionControl(object):
 
     def _make_acquisition_paths(self):
         # Paths
-        recording_name = "__".join(
-            [self.acquisition_name, self.instance_name, f"dt_{get_datestr()}"]
-        )
+        recording_name = ".".join([self.acquisition_name, self.instance_name])
         acquisition_file_base = (
             Path(self.data_path)
             / self.acquisition_group
@@ -138,9 +136,9 @@ class PiAcquisitionControl(object):
             raise FileNotFoundError(err_msg)
         self.acquisition_file_base = str(acquisition_file_base)
         self.acquisition_files = make_recording_file_names(
-            path=self.acquisition_file_base
+            path=self.acquisition_file_base,
         )
-        logging.debug(f"{self.instance_name} - files: {self.acquisition_files}")
+        logging.info(f"{self.instance_name} - files: {self.acquisition_files}")
 
     def _received_command(self, command):
         command = [c.decode() for c in command]

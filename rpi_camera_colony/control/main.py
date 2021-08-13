@@ -24,7 +24,6 @@ def main():
     conductor = Conductor(
         config_file=args.config_file,
         acquisition_name=args.acquisition_name,
-        inherit_time=args.inherit_time,
         auto_init=False,
     )
 
