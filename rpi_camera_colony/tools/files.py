@@ -12,13 +12,17 @@ def get_datestr():
     return datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
-def make_recording_file_names(path=None, ext_sep=".", video_ext="h264"):
+def make_recording_file_names(
+    path=None, package_id="rcc", ext_sep=".", video_ext="h264"
+):
     basepath, _ = os.path.splitext(str(path))
     return {
-        "video": ext_sep.join([basepath, "video", str(video_ext).replace(".", "")]),
-        "ttl_out": ext_sep.join([basepath, "timestamps_ttl_out", "csv"]),
-        "ttl_in": ext_sep.join([basepath, "timestamps_ttl_in", "csv"]),
-        "metadata": ext_sep.join([basepath, "metadata", "json"]),
+        "video": ext_sep.join(
+            [basepath, package_id, "video", str(video_ext).replace(".", "")]
+        ),
+        "ttl_out": ext_sep.join([basepath, package_id, "timestamps_ttl_out", "csv"]),
+        "ttl_in": ext_sep.join([basepath, package_id, "timestamps_ttl_in", "csv"]),
+        "metadata": ext_sep.join([basepath, package_id, "metadata", "json"]),
     }
 
 
