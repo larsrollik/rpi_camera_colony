@@ -108,15 +108,21 @@ class Conductor(object):
         if not self.acquisition_group:
             self.acquisition_group = acq_name_parts[0]
 
-        self.acquisition_time = acq_name_parts[1] if len(acq_name_parts) > 1 else get_datestr()
+        self.acquisition_time = (
+            acq_name_parts[1] if len(acq_name_parts) > 1 else get_datestr()
+        )
 
         self.config_data["general"]["acquisition_group"] = self.acquisition_group
         self.config_data["general"]["acquisition_name"] = self.acquisition_name
         self.config_data["general"]["acquisition_time"] = self.acquisition_time
 
         for c in self.config_data["controllers"].keys():
-            self.config_data["controllers"][c]["acquisition_time"] = self.acquisition_time
-            self.config_data["controllers"][c]["acquisition_group"] = self.acquisition_group
+            self.config_data["controllers"][c][
+                "acquisition_time"
+            ] = self.acquisition_time
+            self.config_data["controllers"][c][
+                "acquisition_group"
+            ] = self.acquisition_group
 
         self._log_to_file = self.config_data["log"].get("log_to_file")
         self._log_to_console = self.config_data["log"].get("log_to_console")
