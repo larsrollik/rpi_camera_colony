@@ -56,6 +56,13 @@ def parse_args_for_piacquisitioncontrol():
         help="Base name for recording folder and files.",
     )
     parser_acq_ctrl.add_argument(
+        "--acquisition-group",
+        "-g",
+        default="test_group",
+        type=str,
+        help="Base name for recording group folders.",
+    )
+    parser_acq_ctrl.add_argument(
         "--max-acquisition-time",
         "-t",
         default=2 * 3600,

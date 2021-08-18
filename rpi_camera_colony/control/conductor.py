@@ -45,7 +45,9 @@ class Conductor(object):
 
     config_data = None
     config_file = None
+    acquisition_group = ""
     acquisition_name = None
+    acquisition_time = None
 
     _acquisition_controllers = {}
     acquiring = False
@@ -68,7 +70,9 @@ class Conductor(object):
     def __init__(
         self,
         config_file=None,
+        acquisition_group="",
         acquisition_name=None,
+        acquisition_time=None,
         logging_stream_callback=None,
         auto_init=False,
         auto_init_remote=True,
@@ -85,7 +89,9 @@ class Conductor(object):
         logger = logging.getLogger()
         logger.setLevel(getattr(logging, self._log_level))
 
-        self.acquisition_name = acquisition_name
+        self.acquisition_group = acquisition_group or self.acquisition_group
+        self.acquisition_name = acquisition_name or self.acquisition_name
+        self.acquisition_time = acquisition_time or self.acquisition_time
         self._logging_stream_callback = (
             logging_stream_callback or self._callback_receiver
         )
@@ -97,19 +103,25 @@ class Conductor(object):
             self.acquisition_name = self.config_data["general"].get(
                 "acquisition_name", "default_acq_name_get"
             )
+
         acq_name_parts = self.acquisition_name.split("__")
+        if not self.acquisition_group:
+            self.acquisition_group = acq_name_parts[0]
+
+        self.acquisition_time = acq_name_parts[1] if len(acq_name_parts) > 1 else get_datestr()
+
+        self.config_data["general"]["acquisition_group"] = self.acquisition_group
         self.config_data["general"]["acquisition_name"] = self.acquisition_name
-        acq_group = acq_name_parts[0]
-        acq_time = acq_name_parts[1] if len(acq_name_parts) > 1 else get_datestr()
-        self.config_data["general"]["acquisition_group"] = acq_group
-        self.config_data["general"]["acquisition_time"] = acq_time
+        self.config_data["general"]["acquisition_time"] = self.acquisition_time
+
         for c in self.config_data["controllers"].keys():
-            self.config_data["controllers"][c]["acquisition_time"] = acq_time
-            self.config_data["controllers"][c]["acquisition_group"] = acq_group
+            self.config_data["controllers"][c]["acquisition_time"] = self.acquisition_time
+            self.config_data["controllers"][c]["acquisition_group"] = self.acquisition_group
 
         self._log_to_file = self.config_data["log"].get("log_to_file")
         self._log_to_console = self.config_data["log"].get("log_to_console")
 
+        # Execute main components
         self._open_network_comms()
         logging.debug(f"Waiting {delay_for_networking}s for networking to come up..")
         time.sleep(delay_for_networking)

@@ -145,6 +145,8 @@ class RemoteAcquisitionControl(object):
             self.instance_name,
             "--acquisition-name",
             self.config_data["general"]["acquisition_name"],
+            "--acquisition-group",
+            self.config_data["general"]["acquisition_group"],
             "--data-path",
             self.config_data["general"]["remote_data_path"],
             "--max-acquisition-time",

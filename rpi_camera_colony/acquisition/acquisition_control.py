@@ -36,7 +36,7 @@ class PiAcquisitionControl(object):
     instance_name = get_local_ip_address()
     data_path = "/home/pi/data/"
     acquisition_name = "test_recording"
-    acquisition_group = "test_group"
+    acquisition_group = ""
     acquisition_time = get_datestr()
     acquisition_file_base = None
     acquisition_files = None
@@ -48,6 +48,7 @@ class PiAcquisitionControl(object):
         self,
         instance_name=None,
         data_path=None,
+        acquisition_group=None,
         acquisition_name=None,
         control_stream_ip=None,
         control_stream_port=None,
@@ -57,6 +58,7 @@ class PiAcquisitionControl(object):
 
         self.instance_name = instance_name or self.instance_name
         self.data_path = data_path or self.data_path
+        self.acquisition_group = acquisition_group or self.acquisition_group
         self.acquisition_name = acquisition_name or self.acquisition_name
         self.control_stream_ip = control_stream_ip or self.control_stream_ip
         self.control_stream_port = control_stream_port or self.control_stream_port
@@ -122,19 +124,19 @@ class PiAcquisitionControl(object):
 
     def _make_acquisition_paths(self):
         # Paths
-        recording_name = ".".join([self.acquisition_name, self.instance_name])
-        acquisition_file_base = (
+        file_base = ".".join([self.acquisition_name, self.instance_name])
+        acquisition_file_base_path = (
             Path(self.data_path)
             / self.acquisition_group
             / self.acquisition_name
-            / recording_name
+            / file_base
         )
-        acquisition_file_base.parent.mkdir(parents=True, exist_ok=True)
-        if not acquisition_file_base.parent.exists():
-            err_msg = f"Tried to make dir {str(acquisition_file_base.parent)}, but not found on check."
+        acquisition_file_base_path.parent.mkdir(parents=True, exist_ok=True)
+        if not acquisition_file_base_path.parent.exists():
+            err_msg = f"Tried to make dir {str(acquisition_file_base_path.parent)}, but not found on check."
             logging.error(err_msg)
             raise FileNotFoundError(err_msg)
-        self.acquisition_file_base = str(acquisition_file_base)
+        self.acquisition_file_base = str(acquisition_file_base_path)
         self.acquisition_files = make_recording_file_names(
             path=self.acquisition_file_base,
         )
