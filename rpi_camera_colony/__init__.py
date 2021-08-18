@@ -4,7 +4,7 @@
 # License: BSD 3-Clause
 import logging
 
-__version__ = "0.4.0.dev0"
+__version__ = "0.4.0"
 __author__ = "Lars B. Rollik"
 
 level = "DEBUG"
