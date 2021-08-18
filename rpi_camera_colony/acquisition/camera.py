@@ -152,7 +152,7 @@ class Camera(picamera.PiCamera):
     def _write_timestamps_ttl_in(self, x=None):
         if self.file_timestamps_ttl_in is not None:
             self.file_timestamps_ttl_in.write(f"{self.timestamp}\n")
-            logging.info(f"TTL-in detected at {self.timestamp}")
+            logging.debug(f"TTL-in detected at {self.timestamp}")
 
     def _write_timestamps_frame_ttl_out(self, cam_ts, frame_ts):
         if self.file_timestamps_ttl_out is not None:
