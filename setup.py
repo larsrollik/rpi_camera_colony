@@ -1,3 +1,4 @@
+import platform
 from os import path
 
 from setuptools import find_packages
@@ -10,6 +11,10 @@ with open(path.join(this_directory, "README.md")) as f:
 with open(path.join(this_directory, "LICENSE")) as f:
     license_text = f.read()
 
+if "arm" in platform.machine():
+    rpi_install_requires = ["picamera", "RPi.GPIO"]
+else:
+    rpi_install_requires = []
 
 setup(
     name="rpi_camera_colony",
@@ -23,7 +28,8 @@ setup(
     author="Lars B. Rollik",
     author_email="L.B.Rollik@protonmail.com",
     license=license_text,
-    install_requires=["pyzmq", "tornado", "tqdm", "configobj", "numpy"],
+    install_requires=["pyzmq", "tornado", "tqdm", "configobj", "numpy"]
+    + rpi_install_requires,
     extras_require={
         "dev": [
             "black",
@@ -35,7 +41,7 @@ setup(
             "pre-commit",
             "flake8",
         ],
-        "rpi": ["picamera", "RPi.GPIO"],
+        "rpi": rpi_install_requires,
     },
     zip_safe=False,
     include_package_data=True,
