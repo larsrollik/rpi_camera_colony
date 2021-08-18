@@ -43,6 +43,7 @@ class VideoEncoder(picamera.PiVideoEncoder):
 
     @ttl_out_pin.setter
     def ttl_out_pin(self, value):
+        logging.debug(f"Setting TTL out pin to {value}")
         self._ttl_out_pin = value
         if self.ttl_out_pin is not None:
             GPIO.setup(self.ttl_out_pin, GPIO.OUT, initial=GPIO.LOW)
@@ -54,6 +55,7 @@ class VideoEncoder(picamera.PiVideoEncoder):
 
     @ttl_out_duration.setter
     def ttl_out_duration(self, value):
+        logging.debug(f"Setting TTL out duration to {value}")
         self._ttl_out_duration = value
 
     def start(self, output, motion_output=None):
@@ -150,7 +152,7 @@ class Camera(picamera.PiCamera):
     def _write_timestamps_ttl_in(self, x=None):
         if self.file_timestamps_ttl_in is not None:
             self.file_timestamps_ttl_in.write(f"{self.timestamp}\n")
-            logging.debug(f"TTL-in detected at {self.timestamp}")
+            logging.info(f"TTL-in detected at {self.timestamp}")
 
     def _write_timestamps_frame_ttl_out(self, cam_ts, frame_ts):
         if self.file_timestamps_ttl_out is not None:
@@ -168,6 +170,7 @@ class Camera(picamera.PiCamera):
             self.file_timestamps_ttl_out.write("# timestamp_frame, timestamp_ttl\n")
 
         if self.ttl_in_pin is not None:
+            logging.debug(f"Setting TTL in pin to {self.ttl_in_pin}")
             # Add event detection callback
             GPIO.setup(self.ttl_in_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             GPIO.add_event_detect(
