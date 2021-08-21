@@ -16,7 +16,7 @@ def setup_logging_control(level=None):
 
         formatter = logging.Formatter(
             "%(asctime)s.%(msecs)03d - %(levelname)s"
-            " - %(processName)s %(filename)s:%(lineno)s"
+            " - %(filename)s:%(lineno)s"
             " - %(message)s"
         )
         formatter.datefmt = "%Y-%m-%d %H:%M:%S"

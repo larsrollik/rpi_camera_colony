@@ -200,7 +200,7 @@ class Conductor(object):
             )
             self._log_file = open(log_file, "w")
             self._write_to_log(f"# Log for: {self.acquisition_name}\n")
-            logging.debug(f"Logging remote messages to: {self._log_file.name}")
+            logging.info(f"Logging remote messages to: {self._log_file.name}")
 
     def _callback_receiver(self, message=None):
         topic, message = [m.decode() for m in message]
