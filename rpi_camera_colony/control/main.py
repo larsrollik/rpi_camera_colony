@@ -9,10 +9,12 @@ from tqdm import tqdm
 
 from rpi_camera_colony.control.conductor import Conductor
 from rpi_camera_colony.control.conductor import parse_args_for_conductor
+from rpi_camera_colony.tools.log import setup_logging_control
 
 
 def main():
     args = parse_args_for_conductor()
+    setup_logging_control()
 
     progress = tqdm(
         total=7200,

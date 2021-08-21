@@ -43,7 +43,7 @@ def close_file_safe(file_handle):
         file_handle.close()
         file_handle = None
         # Report success
-        logging.debug(f"Closed file:{name}")
+        logging.debug(f"Closed file:\t{name}")
     except BaseException:
         logging.debug(f"FAILED TO CLOSE FILE:{name}")
 

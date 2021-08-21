@@ -140,14 +140,17 @@ class PiAcquisitionControl(object):
         self.acquisition_files = make_recording_file_names(
             path=self.acquisition_file_base,
         )
-        logging.info(f"{self.instance_name} - files: {self.acquisition_files}")
+        logging.debug(
+            f"Files:\n{json.dumps(self.acquisition_files, sort_keys=True, indent=4)}"
+        )
 
     def _received_command(self, command):
         command = [c.decode() for c in command]
         recipient, message_dict_str = command
         message = json.loads(message_dict_str, encoding="utf-8")
 
-        logging.info(f"Recipient '{recipient}' reporting message '{message}'")
+        ms = message.get("status", "")
+        logging.info(f"Received: {message['type']} {'>' if ms else ''} {ms}")
 
         if message["type"] == "command":
             self._update_camera_status(new_status=message["status"])

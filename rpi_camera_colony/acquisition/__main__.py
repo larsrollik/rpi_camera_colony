@@ -12,7 +12,7 @@ import tqdm
 
 import rpi_camera_colony
 from rpi_camera_colony.config.config import get_local_ip_address
-from rpi_camera_colony.config.config import setup_logging
+from rpi_camera_colony.config.config import setup_logging_via_socket
 from rpi_camera_colony.tools.comms import SocketCommunication
 from rpi_camera_colony.tools.files import get_datestr
 
@@ -128,7 +128,7 @@ def main():
         auto_open=True,
     )
 
-    setup_logging(
+    setup_logging_via_socket(
         level=args.log_level,
         address_or_socket=socket_wrapper.socket,
         root_topic=args.instance_name,
@@ -157,7 +157,6 @@ def main():
         while (time.time() - start_time) < max_time and c.active:
             try:
                 time.sleep(print_interval)
-                print(f"Run time: {round(time.time() - start_time, 2)}")
                 progress.update(n=print_interval)
             except KeyboardInterrupt:
                 c.active = False

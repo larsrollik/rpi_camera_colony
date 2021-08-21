@@ -13,6 +13,8 @@ from configobj import ConfigObj
 from validate import Validator
 from zmq.log.handlers import PUBHandler
 
+from rpi_camera_colony.tools.log import log_level_name_to_value
+
 
 def load_config(config_path=None, config_spec_path=None):
     if not config_path:
@@ -38,25 +40,28 @@ def load_config(config_path=None, config_spec_path=None):
 
     validation_success = config.validate(Validator(), copy=True)
     if not validation_success:
-        logging.debug("Configuration file FAILED validation.")
+        logging.info("Configuration file FAILED validation.")
     else:
-        logging.debug(
-            f"Config validation was successful for: \n {json.dumps(config.dict())}"
-        )
+        if log_level_name_to_value("DEBUG") >= log_level_name_to_value(
+            config["log"]["level"]
+        ):
+            logging.debug(
+                f"Config validation was successful for: \n {json.dumps(config.dict(), sort_keys=True, indent=4)}"
+            )
 
     return config
 
 
-def setup_logging(
+def setup_logging_via_socket(
     level="DEBUG", address_or_socket=None, root_topic="logging_root_topic"
 ):
     logging_handler = PUBHandler(interface_or_socket=address_or_socket)
     formatter = logging.Formatter(
-        "%(asctime)s - %(levelname)s"
+        "%(asctime)s.%(msecs)03d - %(levelname)s"
         " - %(processName)s %(filename)s:%(lineno)s"
         " - %(message)s"
     )
-    formatter.datefmt = "%Y-%m-%d %H:%M:%S %p"
+    formatter.datefmt = "%Y-%m-%d %H:%M:%S"
     logging_handler.setFormatter(formatter)
     logging_handler.root_topic = str(
         root_topic
@@ -65,7 +70,9 @@ def setup_logging(
     logger = logging.getLogger()
     logger.setLevel(getattr(logging, level))
     logger.addHandler(logging_handler)
-    logging.info("Logging initialised.")
+    logging.info(
+        f"Logging initialised for {address_or_socket} with topic {root_topic} and level {level}."
+    )
 
 
 def get_local_ip_address():

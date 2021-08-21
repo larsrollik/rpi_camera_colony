@@ -16,6 +16,7 @@ from rpi_camera_colony.tools.comms import ListenerStream
 from rpi_camera_colony.tools.comms import SocketCommunication
 from rpi_camera_colony.tools.files import close_file_safe
 from rpi_camera_colony.tools.files import get_datestr
+from rpi_camera_colony.tools.log import log_level_name_to_value
 
 
 def parse_args_for_conductor():
@@ -129,11 +130,11 @@ class Conductor(object):
 
         # Execute main components
         self._open_network_comms()
-        logging.debug(f"Waiting {delay_for_networking}s for networking to come up..")
+        logging.info(f"Waiting {delay_for_networking}s for networking to come up..")
         time.sleep(delay_for_networking)
 
         self._make_acquisition_controllers(auto_init=auto_init_remote)
-        logging.debug(
+        logging.info(
             f"Waiting {delay_for_remote_instance}s for remote instance to listen.."
         )
         time.sleep(delay_for_remote_instance)
@@ -199,13 +200,21 @@ class Conductor(object):
             )
             self._log_file = open(log_file, "w")
             self._write_to_log(f"# Log for: {self.acquisition_name}\n")
-            logging.debug(f"Logging  remote messages to {self._log_file}")
+            logging.debug(f"Logging remote messages to: {self._log_file.name}")
 
     def _callback_receiver(self, message=None):
         topic, message = [m.decode() for m in message]
-        out_string = f"REMOTE: {topic} :: {message}".strip("\n")
+        instance_name, log_level_on_remote = topic.split(".")
+        remote_dt, remote_level, remote_position, remote_message = message.split(" - ")
+        out_string = (
+            f"REMOTE: {instance_name} - {remote_position} - {remote_message}".strip(
+                "\n"
+            )
+        )
 
-        if self._log_to_console and self._log_level.upper() in topic.upper():
+        message_level = log_level_name_to_value(name=log_level_on_remote)
+        target_level = log_level_name_to_value(name=self._log_level)
+        if self._log_to_console and message_level >= target_level:
             logging.info(out_string)
 
         if (
@@ -286,3 +295,5 @@ class Conductor(object):
 
         self.__cleaned_up = True
         self.active = False
+
+        logging.info("Exiting RCC Conductor.")
