@@ -35,7 +35,7 @@ def parse_args_for_conductor():
         "--acquisition-name",
         "-n",
         type=str,
-        default="default_acq_name_parser__" + get_datestr(),
+        default="_test_rcc_conductor_parser__" + get_datestr(),
         help="Acquisition name [only name; path on Conductor should be defined in config]",
     )
     return parser.parse_args()

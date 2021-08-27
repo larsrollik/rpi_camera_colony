@@ -51,14 +51,14 @@ def parse_args_for_piacquisitioncontrol():
     parser_acq_ctrl.add_argument(
         "--acquisition-name",
         "-n",
-        default="test_recording__" + get_datestr(),
+        default="_test_rcc_acquisition_parser__" + get_datestr(),
         type=str,
         help="Base name for recording folder and files.",
     )
     parser_acq_ctrl.add_argument(
         "--acquisition-group",
         "-g",
-        default="test_group",
+        default="_test_acq_group",
         type=str,
         help="Base name for recording group folders.",
     )
