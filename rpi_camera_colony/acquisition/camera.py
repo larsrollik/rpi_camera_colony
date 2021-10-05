@@ -166,7 +166,7 @@ class Camera(picamera.PiCamera):
 
         if self.ttl_out_pin is not None:
             # Open TTL file and write header
-            self.file_timestamps_ttl_out = open(output_files["ttl_out"], "w")
+            self.file_timestamps_ttl_out = open(output_files["ttl.out"], "w")
             self.file_timestamps_ttl_out.write("# timestamp_frame, timestamp_ttl\n")
 
         if self.ttl_in_pin is not None:
@@ -177,7 +177,7 @@ class Camera(picamera.PiCamera):
                 self.ttl_in_pin, GPIO.RISING, self._write_timestamps_ttl_in
             )
             # Open TTL file and write header
-            self.file_timestamps_ttl_in = open(output_files["ttl_in"], "w")
+            self.file_timestamps_ttl_in = open(output_files["ttl.in"], "w")
             self.file_timestamps_ttl_in.write("# timestamp_frame\n")
 
         super(Camera, self).start_recording(output=str(output_files["video"]), **kwargs)

@@ -4,7 +4,6 @@
 # License: BSD 3-Clause
 import logging
 import os
-import time
 from datetime import datetime
 
 
@@ -18,14 +17,15 @@ def make_recording_file_names(
     # basepath, _ = os.path.splitext(str(path))
     basepath = str(path)
     dt = get_datestr()
+    name_ttl_out = ".".join(["timestamps", "ttl", "out"])
+    name_ttl_in = ".".join(["timestamps", "ttl", "in"])
+
     return {
         "video": ext_sep.join(
             [basepath, dt, package_id, "video", str(video_ext).replace(".", "")]
         ),
-        "ttl_out": ext_sep.join(
-            [basepath, dt, package_id, "timestamps_ttl_out", "csv"]
-        ),
-        "ttl_in": ext_sep.join([basepath, dt, package_id, "timestamps_ttl_in", "csv"]),
+        "ttl.out": ext_sep.join([basepath, dt, package_id, name_ttl_out, "csv"]),
+        "ttl.in": ext_sep.join([basepath, dt, package_id, name_ttl_in, "csv"]),
         "metadata": ext_sep.join([basepath, dt, package_id, "metadata", "json"]),
     }
 
