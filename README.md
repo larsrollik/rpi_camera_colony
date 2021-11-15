@@ -212,6 +212,11 @@ python -m rpi_camera_colony.acquisition.remote_control --help
 ```
 
 
+### Read acquisition metadata & check for video files
+```python
+from rpi_camera_colony import read_session_data
+```
+
 
 ### Sandbox Conductor object in separate process (python multiprocessing)
 See `rpi_camera_colony.control.process_sandbox` for example use of:
