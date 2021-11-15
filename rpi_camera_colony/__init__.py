@@ -6,5 +6,5 @@ import logging
 
 from rpi_camera_colony.tools.readers import read_session_data
 
-__version__ = "0.4.0"
+__version__ = "0.4.1.dev0"
 __author__ = "Lars B. Rollik"
