@@ -106,6 +106,23 @@ def parse_args_for_piacquisitioncontrol():
         default=False,
         action="store_true",
     )
+    parser_acq_ctrl.add_argument(
+        "-fps",
+        "--framerate",
+        target="framerate",
+        default=30,
+        type=int,
+        help="Framerate",
+    )
+    parser_acq_ctrl.add_argument(
+        "-res",
+        "--resolution",
+        target="resolution",
+        nargs="+",
+        default=(1600, 1200),
+        type=int,
+        help="Resolution",
+    )
     return parser.parse_args()
 
 
