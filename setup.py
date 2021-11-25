@@ -28,7 +28,7 @@ setup(
     author="Lars B. Rollik",
     author_email="L.B.Rollik@protonmail.com",
     license=license_text,
-    install_requires=["pyzmq", "tornado", "tqdm", "configobj", "numpy", "rich"]
+    install_requires=["pyzmq", "tornado", "tqdm", "configobj", "numpy", "pandas",  "rich"]
     + rpi_install_requires,
     extras_require={
         "dev": [
