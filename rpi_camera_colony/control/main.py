@@ -45,4 +45,5 @@ def main():
 
 
 if __name__ == "__main__":
+    # sys.argv += ["-c", "/home/lbr/CONFIG_FILES/camera.rcc.npx.optotagging"]
     main()
