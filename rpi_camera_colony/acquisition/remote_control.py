@@ -161,6 +161,10 @@ class RemoteAcquisitionControl(object):
             self.config_data["control"]["address"],
             "--control-stream-port",
             self.config_data["control"]["port"],
+            # "--framerate",
+            # self.config_data["controllers"][self.instance_name]["framerate"],
+            # "--resolution",
+            # self.config_data["controllers"][self.instance_name]["resolution"],
         ]
         cmd = [str(c) for c in cmd]  # assert string
         execute_in_commandline(cmd=cmd)

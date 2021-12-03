@@ -205,12 +205,16 @@ class Conductor(object):
     def _callback_receiver(self, message=None):
         topic, message = [m.decode() for m in message]
         instance_name, log_level_on_remote = topic.split(".")
-        remote_dt, remote_level, remote_position, remote_message = message.split(" - ")
-        out_string = (
-            f"REMOTE: {instance_name} - {remote_position} - {remote_message}".strip(
-                "\n"
+
+        try:  # FIXME: Why is ARM logger not formatted correctly ? Missing timestamps and dash separators.
+            remote_dt, remote_level, remote_position, remote_message = message.split(" - ")
+            out_string = (
+                f"REMOTE: {instance_name} - {remote_position} - {remote_message}".strip(
+                    "\n"
+                )
             )
-        )
+        except BaseException:
+            out_string = message
 
         message_level = log_level_name_to_value(name=log_level_on_remote)
         target_level = log_level_name_to_value(name=self._log_level)
