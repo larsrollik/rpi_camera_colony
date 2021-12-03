@@ -6,6 +6,7 @@ import json
 import logging
 from pathlib import Path
 
+from rpi_camera_colony.config.config import get_interface_mac_address
 from rpi_camera_colony.config.config import get_local_ip_address
 from rpi_camera_colony.tools.comms import ListenerStream
 from rpi_camera_colony.tools.comms import SocketCommunication
@@ -114,6 +115,7 @@ class PiAcquisitionControl(object):
             and not isinstance(v, ListenerStream)
             and not isinstance(v, type(self.camera))
         }
+        metadata["mac_address"] = get_interface_mac_address()
 
         save_path = self.acquisition_files["metadata"]
         with open(save_path, "w") as f:

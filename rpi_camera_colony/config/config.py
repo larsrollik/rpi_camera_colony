@@ -87,3 +87,13 @@ def get_local_ip_address():
     finally:
         s.close()
     return ip
+
+
+def get_interface_mac_address(interface="eth0"):
+    try:
+        f = open(f"/sys/class/net/{interface}/address")
+        mac = f.read().strip("\n")
+    except BaseException:
+        mac = "00:00:00:00:00:00"
+
+    return mac
