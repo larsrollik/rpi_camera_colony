@@ -64,8 +64,14 @@ def read_session_data(session_dir=None):
 
         elif ftype == "video.h264":
             session_data[cam]["has_h264"] = True
+            session_data[cam]["video_file_h264"] = str(
+                Path(filepath).relative_to(session_dir)
+            )
 
         elif ftype == "video.h264.mp4":
             session_data[cam]["has_mp4"] = True
+            session_data[cam]["video_file_mp4"] = str(
+                Path(filepath).relative_to(session_dir)
+            )
 
     return session_data
