@@ -98,8 +98,8 @@ class Camera(picamera.PiCamera):
 
     def __init__(
         self,
-        framerate=90,
-        resolution=(640, 480),
+        framerate=30,
+        resolution=(1600, 1200),
         **kwargs,
     ):
         for attr, value in kwargs.items():

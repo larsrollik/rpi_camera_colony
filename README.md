@@ -151,7 +151,7 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
     1. Set up python, e.g. with [miniconda]
     2. Clone this repository or use `distribute_code.sh` script (Replace hostnames for your RPi)
     3. Install with
-        ```python
+        ```shell
         pip install -e rpi_camera_colony[rpi]  # <- [rpi] argument install specific requirements!
         ```
 
@@ -170,7 +170,7 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
 2. Install this package
     1. Clone this repository
     2. Install with
-        ```python
+        ```shell
         pip install rpi_camera_colony
         ```
 
@@ -212,11 +212,16 @@ python -m rpi_camera_colony.acquisition.remote_control --help
 ```
 
 
+### Read acquisition metadata & check for video files
+```python
+from rpi_camera_colony import read_session_data
+```
+
 
 ### Sandbox Conductor object in separate process (python multiprocessing)
 See `rpi_camera_colony.control.process_sandbox` for example use of:
 ```python
-from rpi_camera_colony.control.process_sandbox import ControlProcess
+from rpi_camera_colony.control.process_sandbox import ConductorAsProcess
 ```
 
 
@@ -263,16 +268,24 @@ This software is released under the **[BSD 3-Clause License](https://github.com/
 
 ## Configuration file specification
 
-        ! Note: additional picamera attributes can be used, but type has to be confirmed in config loading !
+**-> Note:** additional picamera attributes can be used, but not all types implemented. Check below.
+
+**-> Note:** `acquisition_group` is not specified by default, but if `acquisition_name` contains `__` double underscores, then the `acquisition_group` will get auto-populated from the first segment, when split on the `__`. This is to create an acquisition folder organisation like: `/path_to_data/acquisition_group/acquisition_name/[files]`
 
 ```python
+
 [general]
-    acquisition_name = string(default="default_acq_name_config")    # base name for recording
+    acquisition_name = string(default="_test_rcc_name_config")    # base name for recording
+    acquisition_time = string(default="dummy_time")
+    acquisition_group = string(default="")
     remote_data_path = string(default="/home/pi/data/")             # where to store all recordings on RPi
     rpi_username = string(default="pi")
     remote_python_interpreter = string(default="/home/pi/miniconda3/envs/py36/bin/python")      # path to python
     remote_python_entrypoint = string(default="rpi_camera_colony.acquisition")      # path to __main__ entrypoint
     max_acquisition_time = integer(0, 7200, default=7200)           # seconds, shut down acquisition after expiration
+    save_data = boolean(default=True)  # if False, then doesn't write files on RPi
+    general_setting_has_priority = boolean(default=True)  # If False, does not patch in general settings
+    general_settings_to_patch_into_controller = string_list(default=list("save_data", "acquisition_time", "acquisition_group"))  # Add variables here for patching into controllers
 
 [log]
     address = string(max=15, default="192.168.100.10")
@@ -290,6 +303,7 @@ This software is released under the **[BSD 3-Clause License](https://github.com/
     [[__many__]]
         description = string(default="")
         address = string(max=15, default="")
+        save_data = boolean(default=True)
         ttl_channel_external = integer(default=-1)  # metadata info if recording output TTL on specific channel of other acquisition system
         ttl_in_pin = integer(default=16)
         ttl_out_pin = integer(default=8)
@@ -297,10 +311,43 @@ This software is released under the **[BSD 3-Clause License](https://github.com/
 
         # See for list of ALL parameters https://picamera.readthedocs.io/en/latest/api_camera.html
         framerate = integer(min=1, max=90, default=90)
-        resolution = 640x480
+        resolution = int_list(default=list(640, 480))
         vflip = boolean(default=False)
         hflip = boolean(default=False)
-        zoom = (0.0, 0.0, 1.0, 1.0)  # (x, y, w, h)
+
+        brightness = integer(min=0, max=100, default=50)
+        # color_effects: (128, 128) == black and white acquisition. Default is None.
+        color_effects = int_list(default=list(128, 128))
+        contrast = integer(min=-100, max=100, default=0)
+        image_denoise = boolean(default=True)
+        iso = integer(min=0, max=1600, default=0)
+        led = boolean(default=False)
+        preview_alpha = integer(min=0, max=255, default=255)  # DEPRECATED
+        saturation = integer(min=-100, max=100, default=0)
+        sharpness = integer(min=-100, max=100, default=0)
+        still_stats = boolean(default=False)
+        video_denoise = boolean(default=True)
+        video_stabilization = boolean(default=False)
+        # zoom: (x, y, w, h)
+        zoom = float_list(default=list(0.0, 0.0, 1.0, 1.0))
+
+        # Other picamera attributes / not implemented / not tested, but might work
+        # awb_gains
+        # awb_mode = option(default="auto")
+        # drc_strength
+        # exposure_compensation
+        # exposure_mode
+        # exposure_speed = 0
+        # flash_mode = option("off", "auto", "on", "redeye", "fillin", "torch", default="off")
+        # framerate_delta  # new in 1.11
+        # framerate_range  # new in 1.13
+        # image_effect = "none"
+        # image_effect_params  # https://picamera.readthedocs.io/en/release-1.13/api_camera.html#picamera.PiCamera.image_effect_params
+        # meter_mode = option("average", "spot", "backlit", "matrix")
+        # rotation = option(0, 90, 180, 270)
+        # sensor_mode = integer(default=0)
+        # shutter_speed  # microseconds
+
 
 ```
 
