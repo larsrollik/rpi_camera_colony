@@ -66,7 +66,7 @@ def read_session_data(session_dir=None):
                 for c in csv_data.columns:
                     csv_data = csv_data.rename(columns={c: c.strip("#").strip(" ")})
 
-            except pandas.errors.EmptyDataError:
+            except (pandas.errors.EmptyDataError, AssertionError):
                 csv_data = pd.DataFrame()
 
             session_data[cam][ftype.replace(".csv", "")] = csv_data
