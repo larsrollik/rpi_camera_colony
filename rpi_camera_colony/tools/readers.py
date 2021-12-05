@@ -54,7 +54,7 @@ def read_session_data(session_dir=None):
         if "metadata.json" in ftype:
             session_data[cam][ftype.replace(".json", "")] = __read_json(file=filepath)
 
-        elif ftype.endswith(".csv"):
+        elif ftype.endswith(".csv") and "DLC" not in filename:
             # Expect TTL to be empty if not connected.
             try:
                 csv_data = pd.read_csv(filepath)
