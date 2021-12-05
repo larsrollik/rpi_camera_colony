@@ -4,6 +4,7 @@ from glob import glob
 from pathlib import Path
 
 import pandas as pd
+import pandas.errors
 
 
 def __read_json(file=None):
@@ -54,11 +55,16 @@ def read_session_data(session_dir=None):
             session_data[cam][ftype.replace(".json", "")] = __read_json(file=filepath)
 
         elif ftype.endswith(".csv"):
-            csv_data = pd.read_csv(filepath)
+            # Expect TTL to be empty if not connected.
+            try:
+                csv_data = pd.read_csv(filepath)
 
-            # Remove leading hash and whitespace from column names
-            for c in csv_data.columns:
-                csv_data = csv_data.rename(columns={c: c.strip("#").strip(" ")})
+                # Remove leading hash and whitespace from column names
+                for c in csv_data.columns:
+                    csv_data = csv_data.rename(columns={c: c.strip("#").strip(" ")})
+
+            except pandas.errors.EmptyDataError:
+                csv_data = pd.DataFrame()
 
             session_data[cam][ftype.replace(".csv", "")] = csv_data
 
