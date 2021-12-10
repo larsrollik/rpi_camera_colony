@@ -10,7 +10,12 @@ import pandas.errors
 def __read_json(file=None):
     with open(file, "r") as f:
         data = f.read()
-    return json.loads(data)
+
+    try:
+        return json.loads(data)
+    except json.JSONDecodeError:
+        logging.debug(f"Failed to read JSON file: {file}")
+        return {}
 
 
 def exclude_files_by_pattern(file_list=None):
