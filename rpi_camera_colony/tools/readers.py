@@ -13,15 +13,15 @@ def __read_json(file=None):
     return json.loads(data)
 
 
-def exclude_dlc_output_files(rcc_files_in_dir):
+def exclude_files_by_pattern(file_list=None):
     exclusions_contains = ["DLC_resnet"]
     for excl in exclusions_contains:
-        rcc_files_in_dir = [f for f in rcc_files_in_dir if excl not in f]
-    return rcc_files_in_dir
+        file_list = [f for f in file_list if excl not in f]
+    return file_list
 
 
 def read_session_data(session_dir=None):
-    """
+    """Read RCC session metadata & video paths (not video data itself).
 
     File name pattern:
         [session_name].camera_51_blue.20210928_100502.rcc.metadata.json
@@ -40,7 +40,7 @@ def read_session_data(session_dir=None):
 
     namespace_signature = ".rcc."
     rcc_files_in_dir = glob(str(session_dir / f"*{namespace_signature}*"))
-    rcc_files_in_dir = exclude_dlc_output_files(rcc_files_in_dir)
+    rcc_files_in_dir = exclude_files_by_pattern(rcc_files_in_dir)
 
     def get_namespace_identifier(file):
         """Return identifier part. Move to new namespace (underscores replaced with dots) for dict keys."""
