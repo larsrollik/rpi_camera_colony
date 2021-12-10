@@ -13,6 +13,13 @@ def __read_json(file=None):
     return json.loads(data)
 
 
+def exclude_dlc_output_files(rcc_files_in_dir):
+    exclusions_contains = ["DLC_resnet"]
+    for excl in exclusions_contains:
+        rcc_files_in_dir = [f for f in rcc_files_in_dir if excl not in f]
+    return rcc_files_in_dir
+
+
 def read_session_data(session_dir=None):
     """
 
@@ -33,6 +40,7 @@ def read_session_data(session_dir=None):
 
     namespace_signature = ".rcc."
     rcc_files_in_dir = glob(str(session_dir / f"*{namespace_signature}*"))
+    rcc_files_in_dir = exclude_dlc_output_files(rcc_files_in_dir)
 
     def get_namespace_identifier(file):
         """Return identifier part. Move to new namespace (underscores replaced with dots) for dict keys."""
