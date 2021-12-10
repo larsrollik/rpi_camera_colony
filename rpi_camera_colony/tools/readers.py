@@ -65,7 +65,13 @@ def read_session_data(session_dir=None):
 
         # Add data
         if "metadata.json" in ftype:
-            session_data[cam][ftype.replace(".json", "")] = __read_json(file=filepath)
+            metadata = __read_json(file=filepath)
+
+            if not metadata:
+                logging.debug("No metadata")
+                return {}
+
+            session_data[cam][ftype.replace(".json", "")] = metadata
 
         elif ftype.endswith(".csv"):
             # Expect TTL to be empty if not connected.
