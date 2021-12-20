@@ -207,7 +207,9 @@ class Conductor(object):
         instance_name, log_level_on_remote = topic.split(".")
 
         try:  # FIXME: Why is ARM logger not formatted correctly ? Missing timestamps and dash separators.
-            remote_dt, remote_level, remote_position, remote_message = message.split(" - ")
+            remote_dt, remote_level, remote_position, remote_message = message.split(
+                " - "
+            )
             out_string = (
                 f"REMOTE: {instance_name} - {remote_position} - {remote_message}".strip(
                     "\n"
@@ -250,6 +252,11 @@ class Conductor(object):
 
     def start_acquisition(self):
         """Start acquisition."""
+        for _, acq in self._acquisition_controllers.items():
+            acq.transmit_settings()
+
+        time.sleep(1)  # Essential delay to give remote time to process settings
+
         for _, acq in self._acquisition_controllers.items():
             acq.start_acquisition()
 

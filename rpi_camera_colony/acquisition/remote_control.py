@@ -181,8 +181,6 @@ class RemoteAcquisitionControl(object):
         time.sleep(0.1)
 
     def start_acquisition(self):
-        self.transmit_settings()
-        time.sleep(1)
         self.send_command(cmd_type="command", message_dict={"status": "reset"})
         self.send_command(cmd_type="command", message_dict={"status": "start"})
 
