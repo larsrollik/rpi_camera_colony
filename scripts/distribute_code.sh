@@ -9,7 +9,7 @@
 # ! Change rpi host names for your setup
 
 # Default arguments
-code_dir=${1:-"/home/lbr/code/rpi_camera_colony"}
+code_dir=${1:-"$HOME/code/rpi_camera_colony"}
 remote_code_dir=${2:-"/home/pi/code/"}
 remote_pip=${3:-"/home/pi/miniconda3/envs/py36/bin/pip"}
 remote_pip_command="$remote_pip install -e "

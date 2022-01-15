@@ -6,7 +6,7 @@
 #
 # Use as:
 #     remove_remote_data REMOTE_data_path
-# ! Change rpi host names for your setup
+# !! Change rpi host names for your setup
 
 # Default arguments
 data_path_remote=${1:-"/home/pi/data/"}
