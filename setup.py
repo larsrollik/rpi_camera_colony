@@ -23,7 +23,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     python_requires=">=3.6",
-    packages=find_packages() + ["rpi_camera_colony.tools"],
+    packages=find_packages(),
     url="https://github.com/larsrollik/rpi_camera_colony",
     author="Lars B. Rollik",
     author_email="L.B.Rollik@protonmail.com",
