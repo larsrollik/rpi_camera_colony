@@ -21,7 +21,7 @@ from rpi_camera_colony.tools.log import log_level_name_to_value
 
 def parse_args_for_conductor():
     parser = argparse.ArgumentParser(
-        description="Input arguments",
+        description="RPi Camera Colony: Conductor",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(

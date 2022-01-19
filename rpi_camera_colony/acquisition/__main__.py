@@ -19,7 +19,7 @@ from rpi_camera_colony.tools.files import get_datestr
 
 def parse_args_for_piacquisitioncontrol():
     parser = argparse.ArgumentParser(
-        description="Input arguments",
+        description="RPi Camera Colony: Acquisition",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser_general = parser.add_argument_group("General")
