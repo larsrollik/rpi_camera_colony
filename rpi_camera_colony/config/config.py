@@ -6,14 +6,13 @@ import json
 import logging
 import os
 import socket
-import time
 from pathlib import Path
 
 from configobj import ConfigObj
 from validate import Validator
 from zmq.log.handlers import PUBHandler
 
-from rpi_camera_colony.tools.log import log_level_name_to_value
+from rpi_camera_colony.log import log_level_name_to_value
 
 
 def load_config(config_path=None, config_spec_path=None):

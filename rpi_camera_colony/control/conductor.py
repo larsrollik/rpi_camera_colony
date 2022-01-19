@@ -7,16 +7,14 @@ import logging
 import time
 from pathlib import Path
 
-import zmq
-
 from rpi_camera_colony.acquisition.remote_control import RemoteAcquisitionControl
 from rpi_camera_colony.config.config import load_config
-from rpi_camera_colony.tools.comms import find_available_port
-from rpi_camera_colony.tools.comms import ListenerStream
-from rpi_camera_colony.tools.comms import SocketCommunication
-from rpi_camera_colony.tools.files import close_file_safe
-from rpi_camera_colony.tools.files import get_datestr
-from rpi_camera_colony.tools.log import log_level_name_to_value
+from rpi_camera_colony.files import close_file_safe
+from rpi_camera_colony.files import get_datestr
+from rpi_camera_colony.log import log_level_name_to_value
+from rpi_camera_colony.network_communication import find_available_port
+from rpi_camera_colony.network_communication import ListenerStream
+from rpi_camera_colony.network_communication import SocketCommunication
 
 
 def parse_args_for_conductor():
@@ -28,7 +26,7 @@ def parse_args_for_conductor():
         "--config-file",
         "-c",
         type=str,
-        default=Path(__file__).parent.parent / "config/example.config",
+        default="",
         help="Settings file",
     )
     parser.add_argument(

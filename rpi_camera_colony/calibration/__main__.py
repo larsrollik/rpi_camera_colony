@@ -20,8 +20,8 @@ def parse_args_for_calibration():
 
 
 def main():
-    pass
+    NotImplementedError
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

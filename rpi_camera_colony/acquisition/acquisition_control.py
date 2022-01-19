@@ -8,11 +8,11 @@ from pathlib import Path
 
 from rpi_camera_colony.config.config import get_interface_mac_address
 from rpi_camera_colony.config.config import get_local_ip_address
-from rpi_camera_colony.tools.comms import ListenerStream
-from rpi_camera_colony.tools.comms import SocketCommunication
-from rpi_camera_colony.tools.files import DummyFileObject
-from rpi_camera_colony.tools.files import get_datestr
-from rpi_camera_colony.tools.files import make_recording_file_names
+from rpi_camera_colony.files import DummyFileObject
+from rpi_camera_colony.files import get_datestr
+from rpi_camera_colony.files import make_recording_file_names
+from rpi_camera_colony.network_communication import ListenerStream
+from rpi_camera_colony.network_communication import SocketCommunication
 
 try:
     from rpi_camera_colony.acquisition.camera import Camera

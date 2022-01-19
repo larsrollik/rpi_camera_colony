@@ -13,8 +13,8 @@ except ImportError:
     raise ImportError(
         "Can only run camera module on Raspberry Pi with RPi.GPIO and picamera packages installed."
     )
-from rpi_camera_colony.tools.files import close_file_safe
-from rpi_camera_colony.tools.files import DummyFileObject
+from rpi_camera_colony.files import close_file_safe
+from rpi_camera_colony.files import DummyFileObject
 
 GPIO.setwarnings(False)
 GPIO.cleanup()

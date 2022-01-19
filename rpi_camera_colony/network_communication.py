@@ -3,8 +3,6 @@
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
 import logging
-import os
-import subprocess
 from threading import Thread
 
 import numpy as np
@@ -248,27 +246,3 @@ class ListenerStream(Thread):
         # self.ioloop.stop()
         # self.ioloop.clear_current()
         # self.ioloop = None
-
-
-def execute_in_commandline(cmd=None, return_std=False, **kwargs):
-    # kwargs.update({"preexec_fn": os.setsid})
-
-    if return_std:
-        kwargs.update(
-            {
-                "stdout": subprocess.PIPE,
-                "stderr": subprocess.PIPE,
-            }
-        )
-    else:
-        kwargs.update(
-            {
-                "stdout": subprocess.DEVNULL,
-                "stderr": subprocess.DEVNULL,
-            }
-        )
-
-    return subprocess.Popen(
-        cmd,
-        **kwargs,
-    )

@@ -4,11 +4,11 @@
 # License: BSD 3-Clause
 import argparse
 import logging
+import subprocess
 import time
 
 import rpi_camera_colony
 from rpi_camera_colony.config.config import load_config
-from rpi_camera_colony.tools.comms import execute_in_commandline
 
 
 class RemoteAcquisitionControl(object):
@@ -213,7 +213,7 @@ if __name__ == "__main__":
     parser_ctrl.add_argument(
         "--config_data-file",
         "-f",
-        default="~/code/rpi_camera_colony/rpi_camera_colony/config/default.config",
+        default="",
         type=str,
         help="Path to config_data file.",
     )
@@ -257,3 +257,27 @@ if __name__ == "__main__":
     remote_acq_ctrl.cleanup()
 
     print("Exiting Remote Acq Ctrl.")
+
+
+def execute_in_commandline(cmd=None, return_std=False, **kwargs):
+    # kwargs.update({"preexec_fn": os.setsid})
+
+    if return_std:
+        kwargs.update(
+            {
+                "stdout": subprocess.PIPE,
+                "stderr": subprocess.PIPE,
+            }
+        )
+    else:
+        kwargs.update(
+            {
+                "stdout": subprocess.DEVNULL,
+                "stderr": subprocess.DEVNULL,
+            }
+        )
+
+    return subprocess.Popen(
+        cmd,
+        **kwargs,
+    )

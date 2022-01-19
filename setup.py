@@ -28,7 +28,15 @@ setup(
     author="Lars B. Rollik",
     author_email="L.B.Rollik@protonmail.com",
     license=license_text,
-    install_requires=["pyzmq", "tornado", "tqdm", "configobj", "numpy", "pandas",  "rich"]
+    install_requires=[
+        "pyzmq",
+        "tornado",
+        "tqdm",
+        "configobj",
+        "numpy",
+        "pandas",
+        "rich",
+    ]
     + rpi_install_requires,
     extras_require={
         "dev": [
@@ -49,6 +57,7 @@ setup(
         "console_scripts": [
             "rcc_conductor = rpi_camera_colony.control.main:main",
             "rcc_acquisition = rpi_camera_colony.acquisition.__main__:main",
+            "rcc_calibration = rpi_camera_colony.calibration.__main__:main",
         ],
     },
 )

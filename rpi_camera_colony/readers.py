@@ -18,14 +18,19 @@ def __read_json(file=None):
         return {}
 
 
-def exclude_files_by_pattern(file_list=None):
+def __exclude_files_by_pattern(file_list=None):
     exclusions_contains = ["DLC_resnet"]
     for excl in exclusions_contains:
         file_list = [f for f in file_list if excl not in f]
     return file_list
 
 
-def read_session_data(session_dir=None):
+def __get_file_type_identifier(file=None, namespace_divider=None):
+    """Return identifier part. Move to new namespace (underscores replaced with dots) for dict keys."""
+    return str(file.split(namespace_divider)[-1].replace("_", "."))
+
+
+def read_session_data(session_dir=None, namespace_signature=".rcc."):
     """Read RCC session metadata & video paths (not video data itself).
 
     File name pattern:
@@ -43,19 +48,16 @@ def read_session_data(session_dir=None):
     session_dir = Path(session_dir)
     assert session_dir.exists()
 
-    namespace_signature = ".rcc."
     rcc_files_in_dir = glob(str(session_dir / f"*{namespace_signature}*"))
-    rcc_files_in_dir = exclude_files_by_pattern(rcc_files_in_dir)
-
-    def get_namespace_identifier(file):
-        """Return identifier part. Move to new namespace (underscores replaced with dots) for dict keys."""
-        return str(file.split(namespace_signature)[-1].replace("_", "."))
+    rcc_files_in_dir = __exclude_files_by_pattern(rcc_files_in_dir)
 
     session_data = {}
     for filepath in rcc_files_in_dir:
         filename = Path(filepath).name
         cam = filename.split(".")[1]
-        ftype = get_namespace_identifier(filename)
+        ftype = __get_file_type_identifier(
+            file=filename, namespace_divider=namespace_signature
+        )
 
         if cam not in session_data:
             logging.debug(f"New camera found in session '{filename}': {cam}")
