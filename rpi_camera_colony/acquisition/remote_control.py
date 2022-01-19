@@ -11,6 +11,24 @@ import rpi_camera_colony
 from rpi_camera_colony.config.config import load_config
 
 
+def execute_in_commandline(cmd=None, return_std=False, **kwargs):
+    if return_std:
+        output_location = subprocess.PIPE
+    else:
+        output_location = subprocess.DEVNULL
+
+    kwargs.update(
+        {
+            "stdout": output_location,
+            "stderr": subprocess.PIPE,
+        }
+    )
+    return subprocess.Popen(
+        cmd,
+        **kwargs,
+    )
+
+
 class RemoteAcquisitionControl(object):
     """Manager to communicate with remote RPi. Instantiates PiAcquisitionControl on RPi."""
 
@@ -257,27 +275,3 @@ if __name__ == "__main__":
     remote_acq_ctrl.cleanup()
 
     print("Exiting Remote Acq Ctrl.")
-
-
-def execute_in_commandline(cmd=None, return_std=False, **kwargs):
-    # kwargs.update({"preexec_fn": os.setsid})
-
-    if return_std:
-        kwargs.update(
-            {
-                "stdout": subprocess.PIPE,
-                "stderr": subprocess.PIPE,
-            }
-        )
-    else:
-        kwargs.update(
-            {
-                "stdout": subprocess.DEVNULL,
-                "stderr": subprocess.DEVNULL,
-            }
-        )
-
-    return subprocess.Popen(
-        cmd,
-        **kwargs,
-    )
