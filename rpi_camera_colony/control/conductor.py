@@ -41,6 +41,12 @@ def parse_args_for_conductor():
         default=False,
         action="store_true",
     )
+    parser.add_argument(
+        "--debug",
+        "-d",
+        default=False,
+        action="store_true",
+    )
     return parser.parse_args()
 
 
@@ -61,6 +67,8 @@ class Conductor(object):
 
     run_for_calibration = False
     calibration_framerate = 2
+
+    debug = False
 
     _logging_socket = None
     _logging_stream_callback = None
@@ -87,6 +95,7 @@ class Conductor(object):
         delay_for_networking=4,
         delay_for_remote_instance=6,
         run_for_calibration=False,
+        debug=False,
         **kwargs,
     ):
         """Create new Acquisition Conductor."""
@@ -95,7 +104,8 @@ class Conductor(object):
         self.config_file = config_file
         self._load_config()
 
-        self._log_level = self.config_data["log"]["level"]
+        self.debug = debug
+        self._log_level = "DEBUG" if self.debug else self.config_data["log"]["level"]
         logger = logging.getLogger()
         logger.setLevel(getattr(logging, self._log_level))
 
