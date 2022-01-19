@@ -36,6 +36,11 @@ def parse_args_for_conductor():
         default="_test_rcc_conductor_parser__" + get_datestr(),
         help="Acquisition name [only name; path on Conductor should be defined in config]",
     )
+    parser.add_argument(
+        "--calibration",
+        default=False,
+        action="store_true",
+    )
     return parser.parse_args()
 
 
@@ -53,6 +58,9 @@ class Conductor(object):
 
     auto_init = False
     auto_init_remote = True
+
+    run_for_calibration = False
+    calibration_framerate = 2
 
     _logging_socket = None
     _logging_stream_callback = None
@@ -78,6 +86,8 @@ class Conductor(object):
         auto_init_remote=True,
         delay_for_networking=4,
         delay_for_remote_instance=6,
+        run_for_calibration=False,
+        **kwargs,
     ):
         """Create new Acquisition Conductor."""
         super(Conductor, self).__init__()
@@ -97,6 +107,7 @@ class Conductor(object):
         )
         self.auto_init = auto_init
         self.auto_init_remote = auto_init_remote
+        self.run_for_calibration = run_for_calibration
 
         # Process arguments
         if not self.acquisition_name:
@@ -116,6 +127,7 @@ class Conductor(object):
         self.config_data["general"]["acquisition_group"] = self.acquisition_group
         self.config_data["general"]["acquisition_name"] = self.acquisition_name
         self.config_data["general"]["acquisition_time"] = self.acquisition_time
+        self.config_data["general"]["run_for_calibration"] = self.run_for_calibration
 
         for c in self.config_data["controllers"].keys():
             self.config_data["controllers"][c][
@@ -124,6 +136,11 @@ class Conductor(object):
             self.config_data["controllers"][c][
                 "acquisition_group"
             ] = self.acquisition_group
+
+            if self.run_for_calibration:
+                self.config_data["controllers"][c][
+                    "framerate"
+                ] = self.calibration_framerate
 
         self._log_to_file = self.config_data["log"].get("log_to_file")
         self._log_to_console = self.config_data["log"].get("log_to_console")
