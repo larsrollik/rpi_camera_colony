@@ -72,6 +72,7 @@ class Conductor(object):
         self,
         config_file=None,
         acquisition_group="",
+        acquisition_group_divider="__",
         acquisition_name=None,
         acquisition_time=None,
         logging_stream_callback=None,
@@ -105,8 +106,9 @@ class Conductor(object):
                 "acquisition_name", "default_acq_name_get"
             )
 
-        acq_name_parts = self.acquisition_name.split("__")
-        if not self.acquisition_group:
+        # Add acquisition group if name has group segment, when split by standard divider
+        acq_name_parts = self.acquisition_name.split(acquisition_group_divider)
+        if not self.acquisition_group and len(acq_name_parts) > 1:
             self.acquisition_group = acq_name_parts[0]
 
         self.acquisition_time = (
