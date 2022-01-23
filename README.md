@@ -138,7 +138,7 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
 
 ### Raspberry Pi setup
 0. Set up RPi hardware
-    1. Install [Raspbian] -> <span style="color:red">`NOTE: Use Raspbian Buster for now. There is no PiCamera equivalent readily available for the Raspbian Bullseye libcamera apps.`</span>.
+    1. Install [Raspbian] -> `NOTE: Use Raspbian Buster for now. There is no PiCamera equivalent readily available for the Raspbian Bullseye libcamera apps.`
     2. Enable camera, GPIO interfaces, and ssh in `sudo raspi-config` options
     3. Connect hardware:
        1. Camera
