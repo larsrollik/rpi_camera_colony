@@ -20,7 +20,7 @@
 [![Downloads](https://pepy.tech/badge/rpi_camera_colony)](https://pepy.tech/project/rpi_camera_colony)
 -->
 
-# RPi Camera Colony
+# RPi Camera Colony (RCC)
 Central control for video acquisition with (many) Raspberry Pi cameras
 ---
 
