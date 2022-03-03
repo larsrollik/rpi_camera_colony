@@ -83,7 +83,7 @@ def read_session_data(session_dir=None, namespace_signature=".rcc."):
                 # Assert that matches TTL-in (shape[1]=1) or TTL-out (shape[1]=2) column layout
                 assert csv_data.shape[1] in (1, 2)
 
-                # Remove leading hash and whitespace from column names
+                # Remove leading hash and whitespace from column names (legacy naming)
                 for c in csv_data.columns:
                     csv_data = csv_data.rename(columns={c: c.strip("#").strip(" ")})
 
