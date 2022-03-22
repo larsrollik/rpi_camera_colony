@@ -7,16 +7,14 @@ import logging
 import time
 from pathlib import Path
 
-import zmq
-
 from rpi_camera_colony.acquisition.remote_control import RemoteAcquisitionControl
 from rpi_camera_colony.config.config import load_config
-from rpi_camera_colony.tools.comms import find_available_port
-from rpi_camera_colony.tools.comms import ListenerStream
-from rpi_camera_colony.tools.comms import SocketCommunication
-from rpi_camera_colony.tools.files import close_file_safe
-from rpi_camera_colony.tools.files import get_datestr
-from rpi_camera_colony.tools.log import log_level_name_to_value
+from rpi_camera_colony.files import close_file_safe
+from rpi_camera_colony.files import get_datestr
+from rpi_camera_colony.log import log_level_name_to_value
+from rpi_camera_colony.network_communication import find_available_port
+from rpi_camera_colony.network_communication import ListenerStream
+from rpi_camera_colony.network_communication import SocketCommunication
 
 
 def parse_args_for_conductor():
@@ -28,7 +26,7 @@ def parse_args_for_conductor():
         "--config-file",
         "-c",
         type=str,
-        default=Path(__file__).parent.parent / "config/example.config",
+        default="",
         help="Settings file",
     )
     parser.add_argument(
@@ -37,6 +35,17 @@ def parse_args_for_conductor():
         type=str,
         default="_test_rcc_conductor_parser__" + get_datestr(),
         help="Acquisition name [only name; path on Conductor should be defined in config]",
+    )
+    parser.add_argument(
+        "--calibration",
+        default=False,
+        action="store_true",
+    )
+    parser.add_argument(
+        "--debug",
+        "-d",
+        default=False,
+        action="store_true",
     )
     return parser.parse_args()
 
@@ -56,6 +65,11 @@ class Conductor(object):
     auto_init = False
     auto_init_remote = True
 
+    run_for_calibration = False
+    calibration_framerate = 2
+
+    debug = False
+
     _logging_socket = None
     _logging_stream_callback = None
     _log_level = "INFO"
@@ -72,6 +86,7 @@ class Conductor(object):
         self,
         config_file=None,
         acquisition_group="",
+        acquisition_group_divider="__",
         acquisition_name=None,
         acquisition_time=None,
         logging_stream_callback=None,
@@ -79,6 +94,9 @@ class Conductor(object):
         auto_init_remote=True,
         delay_for_networking=4,
         delay_for_remote_instance=6,
+        run_for_calibration=False,
+        debug=False,
+        **kwargs,
     ):
         """Create new Acquisition Conductor."""
         super(Conductor, self).__init__()
@@ -86,7 +104,8 @@ class Conductor(object):
         self.config_file = config_file
         self._load_config()
 
-        self._log_level = self.config_data["log"]["level"]
+        self.debug = debug
+        self._log_level = "DEBUG" if self.debug else self.config_data["log"]["level"]
         logger = logging.getLogger()
         logger.setLevel(getattr(logging, self._log_level))
 
@@ -98,6 +117,7 @@ class Conductor(object):
         )
         self.auto_init = auto_init
         self.auto_init_remote = auto_init_remote
+        self.run_for_calibration = run_for_calibration
 
         # Process arguments
         if not self.acquisition_name:
@@ -105,8 +125,9 @@ class Conductor(object):
                 "acquisition_name", "default_acq_name_get"
             )
 
-        acq_name_parts = self.acquisition_name.split("__")
-        if not self.acquisition_group:
+        # Add acquisition group if name has group segment, when split by standard divider
+        acq_name_parts = self.acquisition_name.split(acquisition_group_divider)
+        if not self.acquisition_group and len(acq_name_parts) > 1:
             self.acquisition_group = acq_name_parts[0]
 
         self.acquisition_time = (
@@ -116,6 +137,7 @@ class Conductor(object):
         self.config_data["general"]["acquisition_group"] = self.acquisition_group
         self.config_data["general"]["acquisition_name"] = self.acquisition_name
         self.config_data["general"]["acquisition_time"] = self.acquisition_time
+        self.config_data["general"]["run_for_calibration"] = self.run_for_calibration
 
         for c in self.config_data["controllers"].keys():
             self.config_data["controllers"][c][
@@ -124,6 +146,11 @@ class Conductor(object):
             self.config_data["controllers"][c][
                 "acquisition_group"
             ] = self.acquisition_group
+
+            if self.run_for_calibration:
+                self.config_data["controllers"][c][
+                    "framerate"
+                ] = self.calibration_framerate
 
         self._log_to_file = self.config_data["log"].get("log_to_file")
         self._log_to_console = self.config_data["log"].get("log_to_console")

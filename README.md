@@ -20,7 +20,7 @@
 [![Downloads](https://pepy.tech/badge/rpi_camera_colony)](https://pepy.tech/project/rpi_camera_colony)
 -->
 
-# RPi Camera Colony
+# RPi Camera Colony (RCC)
 Central control for video acquisition with (many) Raspberry Pi cameras
 ---
 
@@ -138,7 +138,7 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
 
 ### Raspberry Pi setup
 0. Set up RPi hardware
-    1. Install [Raspbian]
+    1. Install [Raspbian] -> `NOTE: Use Raspbian Buster for now. There is no PiCamera equivalent readily available for the Raspbian Bullseye libcamera apps.`
     2. Enable camera, GPIO interfaces, and ssh in `sudo raspi-config` options
     3. Connect hardware:
        1. Camera
@@ -397,18 +397,27 @@ sudo systemctl restart systemd-timesyncd
 wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
 sudo md5sum Miniconda3-latest-Linux-armv7l.sh # (optional) check md5
 sudo /bin/bash Miniconda3-latest-Linux-armv7l.sh # -> change default directory to /home/pi/miniconda3
-sudo nano /home/pi/.bashrc # -> add: export PATH="/home/pi/miniconda3/bin:$PATH"
-sudo reboot -h now
 
-# Add RPi package channel
-conda config --add channels rpi
+# Add conda to path
+echo 'export PATH="/home/pi/miniconda3/bin:$PATH"' >> .bashrc
+source .bashrc # or log out and in again
 
+# Change permissions for conda
 sudo chown -R pi:pi /home/pi/miniconda3
 
-conda install python=3.6
+# Create conda environment and install basic packages (e.g. dependencies for this package)
+conda config --add channels rpi
+conda create -y -n py36 python=3.6 numpy pandas pyzmq
 
-conda create -n py36 python=3.6 numpy
-# next install this package
+echo 'source activate py36' >> .bashrc
+source .bashrc # or log out and in again
+
+pip install picamera RPi.GPIO
+
+# Re/install RCC
+pip uninstall rpi_camera_colony -y
+pip install --upgrade git+https://github.com/larsrollik/rpi_camera_colony.git#egg=rpi_camera_colony
+
 ```
 
 

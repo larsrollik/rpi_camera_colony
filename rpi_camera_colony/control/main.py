@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 from rpi_camera_colony.control.conductor import Conductor
 from rpi_camera_colony.control.conductor import parse_args_for_conductor
-from rpi_camera_colony.tools.log import setup_logging_control
+from rpi_camera_colony.log import setup_logging_control
 
 
 def main():
@@ -45,5 +45,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # sys.argv += ["-c", "/home/lbr/CONFIG_FILES/camera.rcc.npx.optotagging"]
     main()

@@ -18,12 +18,12 @@ else:
 
 setup(
     name="rpi_camera_colony",
-    version="0.4.1.dev0",
+    version="0.4.1.dev1",
     description="RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras",
     long_description=long_description,
     long_description_content_type="text/markdown",
     python_requires=">=3.6",
-    packages=find_packages() + ["rpi_camera_colony.tools"],
+    packages=find_packages(),
     url="https://github.com/larsrollik/rpi_camera_colony",
     author="Lars B. Rollik",
     author_email="L.B.Rollik@protonmail.com",
@@ -57,6 +57,7 @@ setup(
         "console_scripts": [
             "rcc_conductor = rpi_camera_colony.control.main:main",
             "rcc_acquisition = rpi_camera_colony.acquisition.__main__:main",
+            "rcc_calibration = rpi_camera_colony.calibration.__main__:main",
         ],
     },
 )

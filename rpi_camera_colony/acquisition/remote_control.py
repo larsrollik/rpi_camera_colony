@@ -4,11 +4,29 @@
 # License: BSD 3-Clause
 import argparse
 import logging
+import subprocess
 import time
 
 import rpi_camera_colony
 from rpi_camera_colony.config.config import load_config
-from rpi_camera_colony.tools.comms import execute_in_commandline
+
+
+def execute_in_commandline(cmd=None, return_std=False, **kwargs):
+    if return_std:
+        output_location = subprocess.PIPE
+    else:
+        output_location = subprocess.DEVNULL
+
+    kwargs.update(
+        {
+            "stdout": output_location,
+            "stderr": subprocess.PIPE,
+        }
+    )
+    return subprocess.Popen(
+        cmd,
+        **kwargs,
+    )
 
 
 class RemoteAcquisitionControl(object):
@@ -213,7 +231,7 @@ if __name__ == "__main__":
     parser_ctrl.add_argument(
         "--config_data-file",
         "-f",
-        default="~/code/rpi_camera_colony/rpi_camera_colony/config/default.config",
+        default="",
         type=str,
         help="Path to config_data file.",
     )

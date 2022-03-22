@@ -13,8 +13,8 @@ import tqdm
 import rpi_camera_colony
 from rpi_camera_colony.config.config import get_local_ip_address
 from rpi_camera_colony.config.config import setup_logging_via_socket
-from rpi_camera_colony.tools.comms import SocketCommunication
-from rpi_camera_colony.tools.files import get_datestr
+from rpi_camera_colony.files import get_datestr
+from rpi_camera_colony.network_communication import SocketCommunication
 
 
 def parse_args_for_piacquisitioncontrol():

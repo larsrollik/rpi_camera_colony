@@ -13,9 +13,9 @@ from threading import Thread
 import psutil
 from PyQt5.QtCore import QThread
 
+from rpi_camera_colony.acquisition.remote_control import execute_in_commandline
 from rpi_camera_colony.control.conductor import Conductor
 from rpi_camera_colony.control.conductor import parse_args_for_conductor
-from rpi_camera_colony.tools.comms import execute_in_commandline
 
 
 def _get_default_python_path():
