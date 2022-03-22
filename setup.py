@@ -18,7 +18,7 @@ else:
 
 setup(
     name="rpi_camera_colony",
-    version="0.4.1.dev2",
+    version="0.4.1",
     description="RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras",
     long_description=long_description,
     long_description_content_type="text/markdown",
