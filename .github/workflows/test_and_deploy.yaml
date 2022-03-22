@@ -19,7 +19,6 @@ jobs:
         run: |
           black ./ --check
           flake8
-
   deploy:
     needs: lint
     runs-on: ubuntu-latest
