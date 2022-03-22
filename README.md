@@ -31,12 +31,13 @@ A single configuration file and a few lines of code allow specific and reproduci
 **Example use with Python:**
 
 ```python
+import time
 from rpi_camera_colony.control.conductor import Conductor
 
 conductor = Conductor(settings_file="configuration_file")  # Manages remote RPi
 conductor.start_acquisition()  # Starts recording on all remotes
 
-...
+time.sleep(20)  # do nothing or something else in between
 
 conductor.stop_acquisition()  # Stops recording on all remotes
 
@@ -69,6 +70,13 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
 - configobj
 - tqdm
 - numpy
+- pandas
+
+
+    Note: Use conda to install numpy/pandas to get pre-compiled packages
+    (See below for instructions)
+
+
 
 **On RPi only:**
 - picamera
@@ -272,7 +280,7 @@ This software is released under the **[BSD 3-Clause License](https://github.com/
 
 **-> Note:** `acquisition_group` is not specified by default, but if `acquisition_name` contains `__` double underscores, then the `acquisition_group` will get auto-populated from the first segment, when split on the `__`. This is to create an acquisition folder organisation like: `/path_to_data/acquisition_group/acquisition_name/[files]`
 
-```python
+```shell
 
 [general]
     acquisition_name = string(default="_test_rcc_name_config")    # base name for recording
