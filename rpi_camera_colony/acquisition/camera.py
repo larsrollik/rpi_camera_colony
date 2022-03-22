@@ -21,6 +21,10 @@ GPIO.cleanup()
 GPIO.setmode(GPIO.BOARD)
 
 
+def _get_realtime():
+    return time.clock_gettime(time.CLOCK_REALTIME)
+
+
 class VideoEncoder(picamera.PiVideoEncoder):
     """https://picamera.readthedocs.io/en/release-1.13/recipes2.html#custom-encoders"""
 
@@ -151,12 +155,15 @@ class Camera(picamera.PiCamera):
 
     def _write_timestamps_ttl_in(self, x=None):
         if self.file_timestamps_ttl_in is not None:
-            self.file_timestamps_ttl_in.write(f"{self.timestamp}\n")
+            self.file_timestamps_ttl_in.write(f"{self.timestamp},{_get_realtime()}\n")
             logging.info(f"TTL-in detected at {self.timestamp}")
 
     def _write_timestamps_frame_ttl_out(self, cam_ts, frame_ts):
         if self.file_timestamps_ttl_out is not None:
-            self.file_timestamps_ttl_out.write(f"{cam_ts},{frame_ts}\n")
+
+            self.file_timestamps_ttl_out.write(
+                f"{cam_ts},{frame_ts},{_get_realtime()}\n"
+            )
 
     def start_recording(self, output_files=None, **kwargs):
         if isinstance(output_files["video"], DummyFileObject):
@@ -167,7 +174,9 @@ class Camera(picamera.PiCamera):
         if self.ttl_out_pin is not None:
             # Open TTL file and write header
             self.file_timestamps_ttl_out = open(output_files["ttl.out"], "w")
-            self.file_timestamps_ttl_out.write("# timestamp_frame, timestamp_ttl\n")
+            self.file_timestamps_ttl_out.write(
+                "timestamp_frame,timestamp_ttl,sys_time\n"
+            )
 
         if self.ttl_in_pin is not None:
             logging.debug(f"Setting TTL in pin to {self.ttl_in_pin}")
@@ -178,7 +187,7 @@ class Camera(picamera.PiCamera):
             )
             # Open TTL file and write header
             self.file_timestamps_ttl_in = open(output_files["ttl.in"], "w")
-            self.file_timestamps_ttl_in.write("# timestamp_frame\n")
+            self.file_timestamps_ttl_in.write("timestamp_frame,sys_time\n")
 
         super(Camera, self).start_recording(output=str(output_files["video"]), **kwargs)
 
