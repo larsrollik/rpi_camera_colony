@@ -9,6 +9,17 @@
 
 # Default arguments
 data_path_local=${1:-"$HOME/data/"}
-fps=${2:-90}
+fps=${2:-60}
 
-find $data_path_local -name "*.h264" | parallel -j 8 MP4Box -fps $fps -add {1} {1}.mp4
+find $target_path -type f -name "*.h264" -print0 |
+  while IFS= read -r -d '' file; do
+  converted_file=${file}.mp4
+
+    if stat -t $converted_file >/dev/null 2>&1
+    then
+      :	# converted_file exists, do nothing
+    else
+      printf "\n ==>> Converting file: $f"
+      MP4Box -fps $fps -add $file $converted_file
+    fi
+  done
