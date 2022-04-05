@@ -12,6 +12,21 @@ with open(path.join(this_directory, "LICENSE")) as f:
     license_text = f.read()
 
 
+install_requires = [
+    "pyzmq",
+    "tornado",
+    "tqdm",
+    "configobj",
+    "numpy",
+    "pandas",
+    "rich",
+]
+rpi_requirements = ["picamera", "RPi.GPIO"]
+
+if "arm" in platform.machine().lower():
+    install_requires += rpi_requirements
+
+
 setup(
     name="rpi_camera_colony",
     version="0.4.4",
@@ -24,18 +39,7 @@ setup(
     author="Lars B. Rollik",
     author_email="L.B.Rollik@protonmail.com",
     license=license_text,
-    install_requires=[
-        "pyzmq",
-        "tornado",
-        "tqdm",
-        "configobj",
-        "numpy",
-        "pandas",
-        "rich",
-    ]
-    + ["picamera", "RPi.GPIO"]
-    if "arm" in platform.machine()
-    else [],
+    install_requires=install_requires,
     extras_require={
         "dev": [
             "black",
@@ -47,7 +51,7 @@ setup(
             "pre-commit",
             "flake8",
         ],
-        "rpi": ["picamera", "RPi.GPIO"] if "arm" in platform.machine() else [],
+        "rpi": rpi_requirements,
     },
     zip_safe=False,
     include_package_data=True,
