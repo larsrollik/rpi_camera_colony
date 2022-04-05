@@ -11,10 +11,6 @@ with open(path.join(this_directory, "README.md")) as f:
 with open(path.join(this_directory, "LICENSE")) as f:
     license_text = f.read()
 
-if "arm" in platform.machine():
-    rpi_install_requires = ["picamera", "RPi.GPIO"]
-else:
-    rpi_install_requires = []
 
 setup(
     name="rpi_camera_colony",
@@ -37,7 +33,9 @@ setup(
         "pandas",
         "rich",
     ]
-    + rpi_install_requires,
+    + ["picamera", "RPi.GPIO"]
+    if "arm" in platform.machine()
+    else [],
     extras_require={
         "dev": [
             "black",
@@ -49,7 +47,7 @@ setup(
             "pre-commit",
             "flake8",
         ],
-        "rpi": rpi_install_requires,
+        "rpi": ["picamera", "RPi.GPIO"] if "arm" in platform.machine() else [],
     },
     zip_safe=False,
     include_package_data=True,
