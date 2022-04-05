@@ -5,7 +5,7 @@
  License: BSD 3-Clause
 -->
 <!-- Banners -->
-[![DOI](https://zenodo.org/badge/latestdoi/370656006.svg)](https://zenodo.org/badge/latestdoi/370656006)
+[![DOI](https://zenodo.org/badge/370656006.svg)](https://zenodo.org/badge/latestdoi/370656006)
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/rpi_camera_colony)](https://github.com/larsrollik/rpi_camera_colony)
 [![PyPI](https://img.shields.io/pypi/v/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
 [![Wheel](https://img.shields.io/pypi/wheel/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
