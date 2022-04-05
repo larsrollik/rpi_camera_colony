@@ -5,7 +5,7 @@
  License: BSD 3-Clause
 -->
 <!-- Banners -->
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5218624.svg)](https://doi.org/10.5281/zenodo.5218624)
+[![DOI](https://zenodo.org/badge/370656006.svg)](https://zenodo.org/badge/latestdoi/370656006)
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/rpi_camera_colony)](https://github.com/larsrollik/rpi_camera_colony)
 [![PyPI](https://img.shields.io/pypi/v/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
 [![Wheel](https://img.shields.io/pypi/wheel/rpi_camera_colony.svg)](https://pypi.org/project/rpi_camera_colony)
@@ -236,7 +236,7 @@ from rpi_camera_colony.control.process_sandbox import ConductorAsProcess
 
 ## Citation
 
-> Rollik, Lars B. (2021). RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras. doi: [10.5281/zenodo.4916007](https://doi.org/10.5281/zenodo.4916007).
+> Rollik, Lars B. (2021). RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras. doi: [10.5281/zenodo.6414747](https://doi.org/10.5281/zenodo.6414747).
 
 **BibTeX**
 ```BibTeX
@@ -246,8 +246,8 @@ from rpi_camera_colony.control.process_sandbox import ConductorAsProcess
     year         = {2021},
     month        = jun,
     publisher    = {Zenodo},
-    url          = {https://doi.org/10.5281/zenodo.4916007},
-    doi          = {10.5281/zenodo.4916007},
+    url          = {https://doi.org/10.5281/zenodo.6414747},
+    doi          = {10.5281/zenodo.6414747},
   }
 ```
 
