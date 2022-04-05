@@ -158,9 +158,14 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
 1. Install this package
     1. Set up python, e.g. with [miniconda]
     2. Clone this repository or use `distribute_code.sh` script (Replace hostnames for your RPi)
-    3. Install with
+    3. Install
+      a. From Pypi 
         ```shell
-        pip install -e rpi_camera_colony[rpi]  # <- [rpi] argument install specific requirements!
+        pip install rpi_camera_colony[rpi]  # <- Note: `[rpi]` argument adds specific requirements for acquisition on RPi, but is not required for controller
+        ```
+      b. From Github
+        ```shell
+        pip install https://github.com/larsrollik/rpi_camera_colony[rpi]  # <- Note: `[rpi]` argument adds specific requirements for acquisition on RPi, but is not required for controller
         ```
 
 
@@ -404,27 +409,22 @@ sudo systemctl restart systemd-timesyncd
 # Installing miniconda on RPi
 wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh
 sudo md5sum Miniconda3-latest-Linux-armv7l.sh # (optional) check md5
-sudo /bin/bash Miniconda3-latest-Linux-armv7l.sh # -> change default directory to /home/pi/miniconda3
+bash Miniconda3-latest-Linux-armv7l.sh # -> default directory should be: /home/pi/miniconda3
 
 # Add conda to path
 echo 'export PATH="/home/pi/miniconda3/bin:$PATH"' >> .bashrc
-source .bashrc # or log out and in again
-
-# Change permissions for conda
-sudo chown -R pi:pi /home/pi/miniconda3
+source .bashrc # or re-connect
 
 # Create conda environment and install basic packages (e.g. dependencies for this package)
 conda config --add channels rpi
 conda create -y -n py36 python=3.6 numpy pandas pyzmq
 
 echo 'source activate py36' >> .bashrc
-source .bashrc # or log out and in again
-
-pip install picamera RPi.GPIO
+source .bashrc # or re-connect
 
 # Re/install RCC
 pip uninstall rpi_camera_colony -y
-pip install --upgrade git+https://github.com/larsrollik/rpi_camera_colony.git#egg=rpi_camera_colony
+pip install --upgrade rpi_camera_colony
 
 ```
 
