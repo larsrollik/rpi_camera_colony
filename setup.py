@@ -29,7 +29,7 @@ if "arm" in platform.machine().lower():
 
 setup(
     name="rpi_camera_colony",
-    version="0.4.4",
+    version="0.4.5.dev0",
     description="RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras",
     long_description=long_description,
     long_description_content_type="text/markdown",
