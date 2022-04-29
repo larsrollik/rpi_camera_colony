@@ -159,7 +159,7 @@ Additionally, all levels are directly accessible: central Conductor, remote cont
     1. Set up python, e.g. with [miniconda]
     2. Clone this repository or use `distribute_code.sh` script (Replace hostnames for your RPi)
     3. Install
-      a. From Pypi 
+      a. From Pypi
         ```shell
         pip install rpi_camera_colony[rpi]  # <- Note: `[rpi]` argument adds specific requirements for acquisition on RPi, but is not required for controller
         ```

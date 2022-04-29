@@ -17,7 +17,7 @@ def main():
     setup_logging_control()
 
     progress = tqdm(
-        total=7200,
+        total=args.max_acquisition_time,
         desc="Recording progress",
         unit="seconds",
         bar_format="{desc}: {percentage:3.0f}%| | {n:.2f}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]",
