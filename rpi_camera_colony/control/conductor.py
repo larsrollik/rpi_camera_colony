@@ -7,7 +7,9 @@ import logging
 import time
 from pathlib import Path
 
-from rpi_camera_colony.acquisition.remote_control import RemoteAcquisitionControl
+from rpi_camera_colony.acquisition.remote_control import (
+    RemoteAcquisitionControl,
+)
 from rpi_camera_colony.config.config import load_config
 from rpi_camera_colony.files import close_file_safe
 from rpi_camera_colony.files import get_datestr
@@ -112,7 +114,9 @@ class Conductor(object):
         self._load_config()
 
         self.debug = debug
-        self._log_level = "DEBUG" if self.debug else self.config_data["log"]["level"]
+        self._log_level = (
+            "DEBUG" if self.debug else self.config_data["log"]["level"]
+        )
         logger = logging.getLogger()
         logger.setLevel(getattr(logging, self._log_level))
 
@@ -141,10 +145,14 @@ class Conductor(object):
             acq_name_parts[1] if len(acq_name_parts) > 1 else get_datestr()
         )
 
-        self.config_data["general"]["acquisition_group"] = self.acquisition_group
+        self.config_data["general"][
+            "acquisition_group"
+        ] = self.acquisition_group
         self.config_data["general"]["acquisition_name"] = self.acquisition_name
         self.config_data["general"]["acquisition_time"] = self.acquisition_time
-        self.config_data["general"]["run_for_calibration"] = self.run_for_calibration
+        self.config_data["general"][
+            "run_for_calibration"
+        ] = self.run_for_calibration
 
         for c in self.config_data["controllers"].keys():
             self.config_data["controllers"][c][
@@ -164,7 +172,9 @@ class Conductor(object):
 
         # Execute main components
         self._open_network_comms()
-        logging.info(f"Waiting {delay_for_networking}s for networking to come up..")
+        logging.info(
+            f"Waiting {delay_for_networking}s for networking to come up.."
+        )
         time.sleep(delay_for_networking)
 
         self._make_acquisition_controllers(auto_init=auto_init_remote)
@@ -198,7 +208,10 @@ class Conductor(object):
             start_port=start_port, ip_address=address
         )
 
-        assert available_port_logging is not None and available_port_control is not None
+        assert (
+            available_port_logging is not None
+            and available_port_control is not None
+        )
         self.config_data["log"]["port"] = available_port_logging
         self.config_data["control"]["port"] = available_port_control
 
@@ -241,13 +254,14 @@ class Conductor(object):
         instance_name, log_level_on_remote = topic.split(".")
 
         try:  # FIXME: Why is ARM logger not formatted correctly ? Missing timestamps and dash separators.
-            remote_dt, remote_level, remote_position, remote_message = message.split(
-                " - "
-            )
-            out_string = (
-                f"REMOTE: {instance_name} - {remote_position} - {remote_message}".strip(
-                    "\n"
-                )
+            (
+                remote_dt,
+                remote_level,
+                remote_position,
+                remote_message,
+            ) = message.split(" - ")
+            out_string = f"REMOTE: {instance_name} - {remote_position} - {remote_message}".strip(
+                "\n"
             )
         except BaseException:
             out_string = message
@@ -272,7 +286,9 @@ class Conductor(object):
     def _make_acquisition_controllers(self, auto_init=True):
         """Make local objects to handle interaction with remote acquisition controller."""
         for instance_name, _ in self.config_data["controllers"].items():
-            self._acquisition_controllers[instance_name] = RemoteAcquisitionControl(
+            self._acquisition_controllers[
+                instance_name
+            ] = RemoteAcquisitionControl(
                 instance_name=instance_name,
                 config_data=self.config_data,
                 control_socket_wrapper=self._control_socket,
@@ -289,7 +305,9 @@ class Conductor(object):
         for _, acq in self._acquisition_controllers.items():
             acq.transmit_settings()
 
-        time.sleep(1)  # Essential delay to give remote time to process settings
+        time.sleep(
+            1
+        )  # Essential delay to give remote time to process settings
 
         for _, acq in self._acquisition_controllers.items():
             acq.start_acquisition()

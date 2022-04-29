@@ -22,11 +22,21 @@ def make_recording_file_names(
 
     return {
         "video": ext_sep.join(
-            [basepath, dt, package_id, "video", str(video_ext).replace(".", "")]
+            [
+                basepath,
+                dt,
+                package_id,
+                "video",
+                str(video_ext).replace(".", ""),
+            ]
         ),
-        "ttl.out": ext_sep.join([basepath, dt, package_id, name_ttl_out, "csv"]),
+        "ttl.out": ext_sep.join(
+            [basepath, dt, package_id, name_ttl_out, "csv"]
+        ),
         "ttl.in": ext_sep.join([basepath, dt, package_id, name_ttl_in, "csv"]),
-        "metadata": ext_sep.join([basepath, dt, package_id, "metadata", "json"]),
+        "metadata": ext_sep.join(
+            [basepath, dt, package_id, "metadata", "json"]
+        ),
     }
 
 

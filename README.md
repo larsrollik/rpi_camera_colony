@@ -4,6 +4,18 @@
  Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
  License: BSD 3-Clause
 -->
+
+<!-- LINKS -->
+[isc-dhcp-server]: https://ubuntu.com/server/docs/network-dhcp
+[miniconda]: https://docs.conda.io/en/latest/miniconda.html
+[pinout.xyz]: https://pinout.xyz
+[Raspbian]: https://www.raspberrypi.org/documentation/installation/installing-images
+
+[arne-plugin]: https://github.com/arnefmeyer/RPiCameraPlugin
+[deshmukh]: https://github.com/DeshmukhLab/PicameraPaper
+[Vidgear]: https://github.com/abhiTronix/vidgear
+
+
 <!-- Banners -->
 [![DOI](https://zenodo.org/badge/370656006.svg)](https://zenodo.org/badge/latestdoi/370656006)
 [![Website](https://img.shields.io/website?up_message=online&url=https%3A%2F%2Fgithub.com/larsrollik/rpi_camera_colony)](https://github.com/larsrollik/rpi_camera_colony)
@@ -428,15 +440,5 @@ pip install --upgrade rpi_camera_colony
 
 ```
 
-
-
-<!-- LINKS -->
-
-[isc-dhcp-server]: https://ubuntu.com/server/docs/network-dhcp
-[miniconda]: https://docs.conda.io/en/latest/miniconda.html
-[pinout.xyz]: https://pinout.xyz
-[Raspbian]: https://www.raspberrypi.org/documentation/installation/installing-images
-
-[arne-plugin]: https://github.com/arnefmeyer/RPiCameraPlugin
-[deshmukh]: https://github.com/DeshmukhLab/PicameraPaper
-[Vidgear]: https://github.com/abhiTronix/vidgear
+---
+Version: "0.4.5"
