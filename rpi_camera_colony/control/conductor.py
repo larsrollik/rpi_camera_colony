@@ -42,6 +42,13 @@ def parse_args_for_conductor():
         action="store_true",
     )
     parser.add_argument(
+        "--max-acquisition-time",
+        "-t",
+        default=2 * 3600,
+        type=int,
+        help="Maximum recording time, seconds.",
+    )
+    parser.add_argument(
         "--debug",
         "-d",
         default=False,
