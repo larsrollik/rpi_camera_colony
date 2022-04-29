@@ -15,7 +15,7 @@ from zmq.log.handlers import PUBHandler
 from rpi_camera_colony.log import log_level_name_to_value
 
 
-def load_config(config_path=None, config_spec_path=None):
+def load_config(config_path=None, config_spec_path=None, ignore_errors=True):
     if not config_path:
         raise ValueError("Need to specify a path for config_path.")
 
@@ -40,6 +40,7 @@ def load_config(config_path=None, config_spec_path=None):
     validation_success = config.validate(Validator(), copy=True)
     if not validation_success:
         logging.info("Configuration file FAILED validation.")
+        raise ValueError("Validation failed")
     else:
         if log_level_name_to_value("DEBUG") >= log_level_name_to_value(
             config["log"]["level"]
