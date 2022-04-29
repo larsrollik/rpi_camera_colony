@@ -4,5 +4,5 @@
 # License: BSD 3-Clause
 from rpi_camera_colony.readers import read_session_data
 
-__version__ = "0.4.8.dev0"
+__version__ = "0.4.8"
 __author__ = "Lars B. Rollik"
