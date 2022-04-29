@@ -11,6 +11,29 @@ import rpi_camera_colony
 from rpi_camera_colony.config.config import load_config
 
 
+def validate_ssh_cli_kwargs(command_dict: dict = None):
+    validated_commands = {}
+    for command, value in command_dict.items():
+        if value is None or value == "":
+            print("")
+            continue
+
+        try:
+            value = str(value)
+        except ValueError:
+            continue
+
+        validated_commands[command] = value
+
+    return validated_commands
+
+
+def dict_to_list(in_dict: dict = None):
+    out_list = []
+    [out_list.extend([k, v]) for k, v in in_dict.items()]
+    return out_list
+
+
 def execute_in_commandline(cmd=None, return_std=False, **kwargs):
     if return_std:
         output_location = subprocess.PIPE
@@ -155,36 +178,27 @@ class RemoteAcquisitionControl(object):
 
         self.pkill_remote()
         time.sleep(1)
+
+        command_dict = {
+            "-m": "rpi_camera_colony.acquisition",
+            "--instance-name": self.instance_name,
+            "--acquisition-name": self.config_data["general"]["acquisition_name"],
+            "--acquisition-group": self.config_data["general"]["acquisition_group"],
+            "--data-path": self.config_data["general"]["remote_data_path"],
+            "--max-acquisition-time": self.config_data["general"][
+                "max_acquisition_time"
+            ],
+            "--log-ip": self.config_data["log"]["address"],
+            "--log-port": self.config_data["log"]["port"],
+            "--log-level": self.config_data["log"]["level"],
+            "--control-stream-ip": self.config_data["control"]["address"],
+            "--control-stream-port": self.config_data["control"]["port"],
+        }
+
         cmd = self._make_pi_command_base_list() + [
             self.remote_python_interpreter,
-            "-m",
-            "rpi_camera_colony.acquisition",
-            "--instance-name",
-            self.instance_name,
-            "--acquisition-name",
-            self.config_data["general"]["acquisition_name"],
-            "--acquisition-group",
-            self.config_data["general"]["acquisition_group"],
-            "--data-path",
-            self.config_data["general"]["remote_data_path"],
-            "--max-acquisition-time",
-            self.config_data["general"]["max_acquisition_time"],
-            "--log-ip",
-            self.config_data["log"]["address"],
-            "--log-port",
-            self.config_data["log"]["port"],
-            "--log-level",
-            self.config_data["log"]["level"],
-            "--control-stream-ip",
-            self.config_data["control"]["address"],
-            "--control-stream-port",
-            self.config_data["control"]["port"],
-            # "--framerate",
-            # self.config_data["controllers"][self.instance_name]["framerate"],
-            # "--resolution",
-            # self.config_data["controllers"][self.instance_name]["resolution"],
+            dict_to_list(validate_ssh_cli_kwargs(command_dict=command_dict)),
         ]
-        cmd = [str(c) for c in cmd]  # assert string
         execute_in_commandline(cmd=cmd)
 
         logging.debug(
