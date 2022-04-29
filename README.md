@@ -441,4 +441,4 @@ pip install --upgrade rpi_camera_colony
 ```
 
 ---
-Version: "0.4.5"
+Version: "0.4.6.dev0"
