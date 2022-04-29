@@ -31,7 +31,10 @@ def find_available_port(
     c = zmq.Context()
 
     available_port = None
-    while available_port is None and start_port <= start_port + allowed_port_range:
+    while (
+        available_port is None
+        and start_port <= start_port + allowed_port_range
+    ):
         try:
             s = c.socket(allowed_zmq_patterns[pattern])
             s.bind(f"{protocol}://{ip_address}:{start_port}")
@@ -102,11 +105,15 @@ class SocketCommunication:
                 return
             else:
                 self.close()
-                logging.debug(f"Trying to re-open connection on {self.full_address}")
+                logging.debug(
+                    f"Trying to re-open connection on {self.full_address}"
+                )
 
         # OPENING
         self.context = zmq.Context()
-        self.socket = self.context.socket(allowed_zmq_patterns.get(self.pattern))
+        self.socket = self.context.socket(
+            allowed_zmq_patterns.get(self.pattern)
+        )
         if self.bind_bool:
             self.socket.bind(self.full_address)
         else:
@@ -137,13 +144,17 @@ class SocketCommunication:
 
     def send_multipart_json(self, recipient="", message=None, flags=0):
         if not isinstance(message, dict):
-            logging.warning(f"Message is type {type(message)}, but has to be dict.")
+            logging.warning(
+                f"Message is type {type(message)}, but has to be dict."
+            )
             return False
 
         self.socket.send(b(recipient), flags=flags | zmq.SNDMORE)
         return self.socket.send_json(obj=message, flags=flags)
 
-    def send_array(self, array=None, metadata=None, flags=0, copy=True, track=False):
+    def send_array(
+        self, array=None, metadata=None, flags=0, copy=True, track=False
+    ):
         """send a numpy array with metadata"""
         metadata_to_send = dict(
             dtype=str(array.dtype),
@@ -169,7 +180,9 @@ class SocketCommunication:
         data_segment = self.socket.recv(flags=flags, copy=copy, track=track)
         buf = memoryview(data_segment)
         received_array = np.frombuffer(buf, dtype=received_metadata["dtype"])
-        return received_metadata, received_array.reshape(received_metadata["shape"])
+        return received_metadata, received_array.reshape(
+            received_metadata["shape"]
+        )
 
     def close(self):
         if self.socket is not None and not self.socket.closed:

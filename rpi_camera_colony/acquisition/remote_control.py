@@ -76,7 +76,9 @@ class RemoteAcquisitionControl(object):
         super(RemoteAcquisitionControl, self).__init__()
 
         if config_data is None and "config_file" not in kwargs:
-            raise ValueError("Require either config_data object or config_file path.")
+            raise ValueError(
+                "Require either config_data object or config_file path."
+            )
 
         self.instance_name = instance_name
         self.config_data = config_data or load_config(
@@ -90,9 +92,9 @@ class RemoteAcquisitionControl(object):
         self.remote_python_entrypoint = self.config_data["general"].get(
             "remote_python_entrypoint"
         )
-        self.remote_address = self.config_data["controllers"][self.instance_name].get(
-            "address"
-        )
+        self.remote_address = self.config_data["controllers"][
+            self.instance_name
+        ].get("address")
 
         for attr, value in kwargs.items():
             if hasattr(self, attr):
@@ -148,9 +150,9 @@ class RemoteAcquisitionControl(object):
         general_setting_has_priority = self.config_data["general"][
             "general_setting_has_priority"
         ]
-        general_settings_to_patch_into_controller = self.config_data["general"][
-            "general_settings_to_patch_into_controller"
-        ]
+        general_settings_to_patch_into_controller = self.config_data[
+            "general"
+        ]["general_settings_to_patch_into_controller"]
         if general_setting_has_priority:
             for key in general_settings_to_patch_into_controller:
                 overwrite_value = self.config_data["general"].get(key)
@@ -182,8 +184,12 @@ class RemoteAcquisitionControl(object):
         command_dict = {
             "-m": "rpi_camera_colony.acquisition",
             "--instance-name": self.instance_name,
-            "--acquisition-name": self.config_data["general"]["acquisition_name"],
-            "--acquisition-group": self.config_data["general"]["acquisition_group"],
+            "--acquisition-name": self.config_data["general"][
+                "acquisition_name"
+            ],
+            "--acquisition-group": self.config_data["general"][
+                "acquisition_group"
+            ],
             "--data-path": self.config_data["general"]["remote_data_path"],
             "--max-acquisition-time": self.config_data["general"][
                 "max_acquisition_time"
@@ -222,7 +228,9 @@ class RemoteAcquisitionControl(object):
 
     def cleanup(self):
         try:
-            self.send_command(cmd_type="command", message_dict={"status": "close"})
+            self.send_command(
+                cmd_type="command", message_dict={"status": "close"}
+            )
             time.sleep(0.5)
             self.connected = False
         except BaseException:
@@ -239,7 +247,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser_general = parser.add_argument_group("General")
     parser_general.add_argument(
-        "--version", "-v", action="version", version=rpi_camera_colony.__version__
+        "--version",
+        "-v",
+        action="version",
+        version=rpi_camera_colony.__version__,
     )
     parser_ctrl = parser.add_argument_group("RemoteAcquisitionControl")
     parser_ctrl.add_argument(

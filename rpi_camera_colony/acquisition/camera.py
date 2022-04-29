@@ -84,7 +84,9 @@ class VideoEncoder(picamera.PiVideoEncoder):
 
                 self.ttl_count += 1
 
-            self.parent._write_timestamps_frame_ttl_out(buf.pts, self.parent.timestamp)
+            self.parent._write_timestamps_frame_ttl_out(
+                buf.pts, self.parent.timestamp
+            )
             self.frame_count += 1
 
         return super(VideoEncoder, self)._callback_write(buf)
@@ -141,7 +143,9 @@ class Camera(picamera.PiCamera):
     def ttl_in_pin(self, value):
         self._ttl_in_pin = value
 
-    def _get_video_encoder(self, camera_port, output_port, format, resize, **options):
+    def _get_video_encoder(
+        self, camera_port, output_port, format, resize, **options
+    ):
         video_encoder = VideoEncoder(
             self, camera_port, output_port, format, resize, **options
         )
@@ -155,7 +159,9 @@ class Camera(picamera.PiCamera):
 
     def _write_timestamps_ttl_in(self, x=None):
         if self.file_timestamps_ttl_in is not None:
-            self.file_timestamps_ttl_in.write(f"{self.timestamp},{_get_realtime()}\n")
+            self.file_timestamps_ttl_in.write(
+                f"{self.timestamp},{_get_realtime()}\n"
+            )
             logging.info(f"TTL-in detected at {self.timestamp}")
 
     def _write_timestamps_frame_ttl_out(self, cam_ts, frame_ts):
@@ -189,7 +195,9 @@ class Camera(picamera.PiCamera):
             self.file_timestamps_ttl_in = open(output_files["ttl.in"], "w")
             self.file_timestamps_ttl_in.write("timestamp_frame,sys_time\n")
 
-        super(Camera, self).start_recording(output=str(output_files["video"]), **kwargs)
+        super(Camera, self).start_recording(
+            output=str(output_files["video"]), **kwargs
+        )
 
     def stop_recording(self):
         if self.ttl_in_pin is not None:

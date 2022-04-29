@@ -31,7 +31,10 @@ def parse_args_for_piacquisitioncontrol():
         help="Print interval [seconds, float]",
     )
     parser_general.add_argument(
-        "--version", "-v", action="version", version=rpi_camera_colony.__version__
+        "--version",
+        "-v",
+        action="version",
+        version=rpi_camera_colony.__version__,
     )
     parser_acq_ctrl = parser.add_argument_group("PiAcquisitionControl")
     parser_acq_ctrl.add_argument(
@@ -77,7 +80,11 @@ def parse_args_for_piacquisitioncontrol():
         help="IP address for logging.",
     )
     parser_acq_ctrl.add_argument(
-        "--log-port", "-lport", default=55555, type=str, help="Port for logging."
+        "--log-port",
+        "-lport",
+        default=55555,
+        type=str,
+        help="Port for logging.",
     )
     parser_acq_ctrl.add_argument(
         "--log-level",
@@ -132,7 +139,9 @@ def main():
         print("Not on Raspberry Pi. Exiting.")
         sys.exit(0)
 
-    from rpi_camera_colony.acquisition.acquisition_control import PiAcquisitionControl
+    from rpi_camera_colony.acquisition.acquisition_control import (
+        PiAcquisitionControl,
+    )
 
     # Set up logging & vars
     socket_wrapper = SocketCommunication(

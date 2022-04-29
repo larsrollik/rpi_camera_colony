@@ -1,3 +1,4 @@
+
 [tool.black]
 target-version = ['py36', 'py37', 'py38', 'py39']
 skip-string-normalization = false
@@ -17,3 +18,7 @@ exclude = '''
   | dist
 )/
 '''
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"

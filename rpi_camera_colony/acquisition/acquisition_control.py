@@ -62,7 +62,9 @@ class PiAcquisitionControl(object):
         self.acquisition_group = acquisition_group or self.acquisition_group
         self.acquisition_name = acquisition_name or self.acquisition_name
         self.control_stream_ip = control_stream_ip or self.control_stream_ip
-        self.control_stream_port = control_stream_port or self.control_stream_port
+        self.control_stream_port = (
+            control_stream_port or self.control_stream_port
+        )
 
         for attr, value in kwargs.items():
             if hasattr(self, attr):
@@ -166,12 +168,16 @@ class PiAcquisitionControl(object):
             # Camera config_data
             if hasattr(self.camera, setting_name):
                 setattr(self.camera, setting_name, setting_value)
-                logging.debug(f"setattr(self.camera, {setting_name}, {setting_value})")
+                logging.debug(
+                    f"setattr(self.camera, {setting_name}, {setting_value})"
+                )
 
             # PiAcquisitionControl config_data
             if hasattr(self, setting_name):
                 setattr(self, setting_name, setting_value)
-                logging.debug(f"setattr(self, {setting_name}, {setting_value})")
+                logging.debug(
+                    f"setattr(self, {setting_name}, {setting_value})"
+                )
 
     def _update_camera_status(self, new_status="stop"):
         logging.debug(f"New status: {new_status} on {self.instance_name}")
