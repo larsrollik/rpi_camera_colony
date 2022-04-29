@@ -17,8 +17,8 @@ jobs:
           pip install .[dev]
       - name: Lint
         run: |
-          black ./ --check
-          flake8
+          black ./ --check --verbose
+          flake8 --verbose
           # pre-commit install
           # pre-commit run --all
 
