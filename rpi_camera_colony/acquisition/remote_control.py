@@ -201,10 +201,9 @@ class RemoteAcquisitionControl(object):
             "--control-stream-port": self.config_data["control"]["port"],
         }
 
-        cmd = self._make_pi_command_base_list() + [
-            self.remote_python_interpreter,
-            dict_to_list(validate_ssh_cli_kwargs(command_dict=command_dict)),
-        ]
+        cmd = self._make_pi_command_base_list()
+        cmd.append(self.remote_python_interpreter)
+        cmd += dict_to_list(validate_ssh_cli_kwargs(command_dict=command_dict))
         execute_in_commandline(cmd=cmd)
 
         logging.debug(
