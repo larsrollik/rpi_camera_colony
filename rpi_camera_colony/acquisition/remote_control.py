@@ -209,7 +209,7 @@ class RemoteAcquisitionControl(object):
             stream_dict = {
                 "--stream-ip": instance_settings["stream_ip"],
                 "--stream-port": instance_settings["stream_port"],
-                           }
+            }
             command_dict.update(stream_dict)
 
         cmd = self._make_pi_command_base_list()
