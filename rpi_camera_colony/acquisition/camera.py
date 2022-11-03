@@ -15,6 +15,7 @@ except ImportError:
     )
 from rpi_camera_colony.files import close_file_safe
 from rpi_camera_colony.files import DummyFileObject
+from rpi_camera_colony.acquisition.streaming import StreamingOutput
 
 GPIO.setwarnings(False)
 GPIO.cleanup()
@@ -102,6 +103,9 @@ class Camera(picamera.PiCamera):
 
     clock_mode = "raw"
 
+    stream_video = False
+    streaming_output = None
+
     def __init__(
         self,
         framerate=30,
@@ -118,6 +122,9 @@ class Camera(picamera.PiCamera):
             resolution=resolution,
             clock_mode=self.clock_mode,
         )
+
+        if self.stream_video:
+            self.streaming_output = StreamingOutput()
 
     @property
     def ttl_out_pin(self):
@@ -198,12 +205,21 @@ class Camera(picamera.PiCamera):
         super(Camera, self).start_recording(
             output=str(output_files["video"]), **kwargs
         )
+        if self.stream_video:
+            stream_kwargs = kwargs.copy()
+            stream_kwargs["format"] = "mjpeg"
+            super(Camera, self).start_recording(
+                output=self.streaming_output, splitter_port=2, **stream_kwargs
+            )
 
     def stop_recording(self):
         if self.ttl_in_pin is not None:
             GPIO.remove_event_detect(self.ttl_in_pin)
 
         try:
+            if self.stream_video:
+                super(Camera, self).stop_recording(splitter_port=2)
+
             super(Camera, self).stop_recording()
         except BaseException:
             logging.error("CAMERA STOP EXCEPTION")

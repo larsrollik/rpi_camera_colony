@@ -128,6 +128,28 @@ def parse_args_for_piacquisitioncontrol():
         type=int,
         help="Resolution",
     )
+
+    parser_acq_ctrl.add_argument(
+        "-s",
+        "--stream-video",
+        default=False,
+        action="store_true",
+    )
+    parser_acq_ctrl.add_argument(
+        "-sip",
+        "--stream-ip",
+        default="192.168.100.31",
+        type=str,
+        help="IP address for video stream.",
+    )
+    parser_acq_ctrl.add_argument(
+        "-sport",
+        "--stream-port",
+        default=8001,
+        type=int,
+        help="Stream port",
+    )
+
     return parser.parse_args()
 
 

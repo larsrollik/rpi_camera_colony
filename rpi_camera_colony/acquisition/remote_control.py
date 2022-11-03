@@ -181,6 +181,10 @@ class RemoteAcquisitionControl(object):
         self.pkill_remote()
         time.sleep(1)
 
+        instance_settings = self.config_data["controllers"].get(
+            self.instance_name
+        )
+
         command_dict = {
             "-m": "rpi_camera_colony.acquisition",
             "--instance-name": self.instance_name,
@@ -199,6 +203,9 @@ class RemoteAcquisitionControl(object):
             "--log-level": self.config_data["log"]["level"],
             "--control-stream-ip": self.config_data["control"]["address"],
             "--control-stream-port": self.config_data["control"]["port"],
+            "--stream-video": instance_settings["stream_video"],
+            "--stream-ip": instance_settings["stream_ip"],
+            "--stream-port": instance_settings["stream_port"],
         }
 
         cmd = self._make_pi_command_base_list()

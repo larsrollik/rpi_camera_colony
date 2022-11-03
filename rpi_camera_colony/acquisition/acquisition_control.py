@@ -5,7 +5,10 @@
 import json
 import logging
 from pathlib import Path
+from threading import Thread
 
+from rpi_camera_colony.acquisition.streaming import StreamingHandler
+from rpi_camera_colony.acquisition.streaming import StreamingServer
 from rpi_camera_colony.config.config import get_interface_mac_address
 from rpi_camera_colony.config.config import get_local_ip_address
 from rpi_camera_colony.files import DummyFileObject
@@ -44,6 +47,13 @@ class PiAcquisitionControl(object):
     acquisition_settings = {}
     video_quality = 23
     save_data = True
+
+    stream_video = False
+    stream_ip = ""
+    stream_port = 8001
+    _stream_handler_handle = None
+    _stream_server = None
+    _stream_thread = None
 
     def __init__(
         self,
@@ -148,6 +158,32 @@ class PiAcquisitionControl(object):
             f"Files:\n{json.dumps(self.acquisition_files, sort_keys=True, indent=4)}"
         )
 
+    def _start_network_stream(self):
+        if self.stream_video and self.camera.streaming_output is not None:
+            self._stream_handler_handle = StreamingHandler
+            self._stream_handler_handle.output_from_camera = (
+                self.camera.streaming_output
+            )
+            self._stream_server = StreamingServer(
+                (self.stream_ip, self.stream_port), self._stream_handler_handle
+            )
+
+            self._stream_thread = Thread(
+                target=self._stream_server.serve_forever
+            )
+            self._stream_thread.daemon = True
+            self._stream_thread.start()
+            logging.debug(
+                f"Streaming video on {self.stream_ip}:{self.stream_port}"
+            )
+
+    def _stop_network_stream(self):
+        if self.stream_video and self._stream_server is not None:
+            self._stream_server.shutdown()
+            logging.debug(
+                f"Shutting down video stream on {self.stream_ip}:{self.stream_port}"
+            )
+
     def _received_command(self, command):
         command = [c.decode() for c in command]
         recipient, message_dict_str = command
@@ -199,6 +235,8 @@ class PiAcquisitionControl(object):
                 format="h264",
                 quality=self.video_quality,
             )
+
+            self._start_network_stream()
 
         elif new_status in "stop":
             self.camera.stop_recording()
