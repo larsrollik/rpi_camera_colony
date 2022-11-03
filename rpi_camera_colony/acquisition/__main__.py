@@ -138,7 +138,7 @@ def parse_args_for_piacquisitioncontrol():
     parser_acq_ctrl.add_argument(
         "-sip",
         "--stream-ip",
-        default="192.168.100.31",
+        default=get_local_ip_address(),
         type=str,
         help="IP address for video stream.",
     )

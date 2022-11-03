@@ -72,6 +72,40 @@ Configuration parameters are centrally defined in an easy-to-read file format an
 Multiple entrypoints for use in python scripts as well as in a single line on the commandline
 Additionally, all levels are directly accessible: central Conductor, remote control handlers, and on the RPi the acquisition control (see below for details).
 
+#### *NEW:* Network video stream
+Add an additional output via network video stream directly from the main `config` or via commandline arguments when calling `rcc_acquisition`.
+
+- `config` example to use with `rcc_conductor` as usual:
+```shell
+# ...
+
+[controllers]
+    [[camera_red_60]]
+        description = "back view"
+        address = "192.168.0.22"
+
+        # Network stream setup:
+        stream_video = True
+        stream_address = "192.168.0.22"
+        stream_port = 8001
+
+# ...
+```
+
+- Command-line entrypoint example:
+  - Options:
+  ````shell
+  -s, --stream-video
+  -sip STREAM_IP, --stream-ip STREAM_IP
+                        IP address for video stream. (default: 192.168.100.31)
+  -sport STREAM_PORT, --stream-port STREAM_PORT
+                        Stream port (default: 8001)
+  ````
+
+  - Example call:
+  ```shell
+  rcc_acquisition --auto-start --stream-video --stream-ip 192.168.100.31 --stream-port 9898
+  ```
 
 
 ## Installation
