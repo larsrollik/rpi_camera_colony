@@ -203,19 +203,27 @@ class RemoteAcquisitionControl(object):
             "--log-level": self.config_data["log"]["level"],
             "--control-stream-ip": self.config_data["control"]["address"],
             "--control-stream-port": self.config_data["control"]["port"],
-            "--stream-video": instance_settings["stream_video"],
-            "--stream-ip": instance_settings["stream_ip"],
-            "--stream-port": instance_settings["stream_port"],
+            # "--stream-video": instance_settings["stream_video"],
         }
+        if instance_settings["stream_video"]:
+            stream_dict = {
+                "--stream-ip": instance_settings["stream_ip"],
+                "--stream-port": instance_settings["stream_port"],
+                           }
+            command_dict.update(stream_dict)
 
         cmd = self._make_pi_command_base_list()
         cmd.append(self.remote_python_interpreter)
         cmd += dict_to_list(validate_ssh_cli_kwargs(command_dict=command_dict))
+        cmd += ["--stream-video"]
+
         execute_in_commandline(cmd=cmd)
 
         logging.debug(
             f"Initialised remote acquisition controller for: {self.remote_address} known as: {self.instance_name}."
         )
+        logging.debug(command_dict)
+        logging.debug(f"CMD: {cmd}")
 
         self.connected = True
 
