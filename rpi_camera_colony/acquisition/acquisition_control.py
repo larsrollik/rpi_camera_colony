@@ -239,6 +239,7 @@ class PiAcquisitionControl(object):
             self._start_network_stream()
 
         elif new_status in "stop":
+            self._stop_network_stream()
             self.camera.stop_recording()
 
         elif new_status in "close":
