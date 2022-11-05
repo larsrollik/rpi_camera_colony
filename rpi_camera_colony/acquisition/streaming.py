@@ -27,6 +27,9 @@ class StreamingOutput:
             self.buffer.seek(0)
         return self.buffer.write(buf)
 
+    def flush(self):
+        print(f"FLUSHING {StreamingOutput}")
+
 
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
