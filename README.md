@@ -56,7 +56,7 @@ conductor.stop_acquisition()  # Stops recording on all remotes
 ```
 or on the commandline:
 ```shell
-rcc_conductor  --config-data-file CONFIG_DATA_FILE  --acquisition-name ACQUISITION_NAME
+rcc-conductor  --config-data-file CONFIG_DATA_FILE  --acquisition-name ACQUISITION_NAME
 ```
 
 
@@ -73,9 +73,9 @@ Multiple entrypoints for use in python scripts as well as in a single line on th
 Additionally, all levels are directly accessible: central Conductor, remote control handlers, and on the RPi the acquisition control (see below for details).
 
 #### *NEW:* Network video stream
-Add an additional output via network video stream directly from the main `config` or via commandline arguments when calling `rcc_acquisition`.
+Add an additional output via network video stream directly from the main `config` or via commandline arguments when calling `rcc-acquisition`.
 
-- `config` example to use with `rcc_conductor` as usual:
+- `config` example to use with `rcc-conductor` as usual:
 ```shell
 # ...
 
@@ -104,7 +104,7 @@ Add an additional output via network video stream directly from the main `config
 
   - Example call:
   ```shell
-  rcc_acquisition --auto-start --stream-video --stream-ip 192.168.100.31 --stream-port 9898
+  rcc-acquisition --auto-start --stream-video --stream-ip 192.168.100.31 --stream-port 9898
   ```
 
 
@@ -239,7 +239,7 @@ Add an additional output via network video stream directly from the main `config
 
 ### Easy access to central Conductor
 ```shell
-rcc_conductor --help
+rcc-conductor --help
 ```
 
 
@@ -254,7 +254,7 @@ python rpi_camera_colony/acquisition --help
 # or
 python -m rpi_camera_colony.acquisition --help
 # or
-rcc_acquisition --help
+rcc-acquisition --help
 ```
 
 
