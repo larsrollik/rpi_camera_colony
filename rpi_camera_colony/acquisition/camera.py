@@ -173,7 +173,6 @@ class Camera(picamera.PiCamera):
 
     def _write_timestamps_frame_ttl_out(self, cam_ts, frame_ts):
         if self.file_timestamps_ttl_out is not None:
-
             self.file_timestamps_ttl_out.write(
                 f"{cam_ts},{frame_ts},{_get_realtime()}\n"
             )

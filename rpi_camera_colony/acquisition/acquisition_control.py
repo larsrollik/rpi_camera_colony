@@ -222,7 +222,6 @@ class PiAcquisitionControl(object):
             self.camera.preview_static()
 
         elif new_status in "start":
-
             if not self.save_data:
                 logging.debug("Requested to run without saving data.")
                 self.acquisition_files["video"] = DummyFileObject()

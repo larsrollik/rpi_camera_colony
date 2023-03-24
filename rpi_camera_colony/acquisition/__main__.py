@@ -191,7 +191,6 @@ def main():
 
     # Run acquisition
     with PiAcquisitionControl(**vars(args)) as c:
-
         time.sleep(2)
         start_time = time.time()
 
