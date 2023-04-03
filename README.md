@@ -468,9 +468,9 @@ conda create -y -n py36 python=3.6 numpy pandas pyzmq
 echo 'source activate py36' >> .bashrc
 source .bashrc # or re-connect
 
-# Re/install RCC
+# Re/install RCC with `[rpi]` option to install picamera and GPIO packages on RPi.
 pip uninstall rpi_camera_colony -y
-pip install --upgrade rpi_camera_colony
+pip install --upgrade rpi_camera_colony[rpi]
 
 ```
 
