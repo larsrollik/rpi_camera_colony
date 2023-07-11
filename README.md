@@ -415,7 +415,7 @@ This software is released under the **[BSD 3-Clause License](https://github.com/
 ## Specific install hints & solutions
 
 ### HQ camera for RPi cannot acquire at resolutions or framerates outlined in the technical description
-`sudo rpi-update` fixes this. - Be careful, this updates the RPi firmware and might have unexpected side effects!
+- `sudo rpi-update` fixes this. - Be careful, this updates the RPi firmware and might have unexpected side effects!
 
 ### There is more than one TTL-in detected for long (>50ms) up/down states of the TTL source
 - add a `bouncetime` parameter to the event detection in [camera.py#L196](https://github.com/larsrollik/rpi_camera_colony/blob/master/rpi_camera_colony/acquisition/camera.py#L196)
