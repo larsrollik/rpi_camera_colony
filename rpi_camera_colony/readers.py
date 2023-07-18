@@ -85,9 +85,7 @@ def read_session_data(session_dir=None, namespace_signature=".rcc."):
 
                 # Remove leading hash and whitespace from column names (legacy naming)
                 for c in csv_data.columns:
-                    csv_data = csv_data.rename(
-                        columns={c: c.strip("#").strip(" ")}
-                    )
+                    csv_data = csv_data.rename(columns={c: c.strip("#").strip(" ")})
 
             except (pandas.errors.EmptyDataError, AssertionError):
                 csv_data = pd.DataFrame()
