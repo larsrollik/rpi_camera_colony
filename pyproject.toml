@@ -1,24 +1,130 @@
-
-[tool.black]
-target-version = ['py36', 'py37', 'py38', 'py39']
-skip-string-normalization = false
-line-length = 79
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.eggs
-  | \ .git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
-
 [build-system]
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "rpi_camera_colony"
+version = "0.5.0"
+authors = [
+    { name = "Lars B. Rollik", email = "L.B.Rollik@protonmail.com" }
+]
+license = { file = "LICENSE" }
+description = "RPi Camera Colony: Central control for video acquisition with (many) Raspberry Pi cameras"
+readme = { file = "README.md", content-type = "text/markdown" }
+classifiers = [
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.6"
+dependencies = [
+    "pyzmq",
+    "tornado",
+    "tqdm",
+    "configobj",
+    "numpy",
+    "pandas",
+    "rich",
+]
+
+[project.urls]
+Repository = "https://github.com/larsrollik/rpi_camera_colony"
+"Issue Tracker" = "https://github.com/larsrollik/rpi_camera_colony/issues"
+
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "coverage",
+    "pytest-cov",  # implies: pytest, coverage dependencies
+    "pytest",
+    "gitpython",
+    "bump2version",
+    "pre-commit",
+    "toml",
+    "types-toml",
+]
+
+[project.entry-points.console_scripts]
+rcc-conductor = "rpi_camera_colony.control.main:main"
+rcc-acquisition = "rpi_camera_colony.acquisition.__main__:main"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = [""]
+
+[tool.setuptools.package-data]
+"*" = ["*.config"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=rpi_camera_colony --cov-report=term-missing --maxfail=5"
+
+[tool.ruff]
+target-version = "py38"
+line-length = 100
+indent-width = 4
+include = ["*.pyi"]
+extend-exclude = ["*.eggs", "*.git", "*.hg", "*.mypy_cache", "*.tox", "*.venv", "*_build", "*buck-out", "*build", "*dist",]
+
+[tool.ruff.lint]
+select = [
+    "E",   # Pyflakes (general errors)
+    "W",   # Pycodestyle warnings
+    "F",   # Pyflakes checks (includes unused imports)
+    "I",   # isort (import sorting)
+    "UP",  # pyupgrade (Python syntax upgrades)
+    "YTT", # check for YAML issues
+    "SIM", # detect unnecessary comprehensions, loops, etc.
+    "PTH", # checks for pathlib best practices
+    "TCH", # checks for typing best practices
+    "PYI", # checks for pyi files
+]
+ignore = []
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"  # Accepts: "google", "numpy", or "pep257".
+
+[tool.ruff.lint.per-file-ignores]
+".bumpversion.cfg" = ["E501", "W291", "W292"]  # Equivalent to excluding it from whitespace checks
+
+[tool.mypy]
+python_version = 3.8
+# strict = true
+# follow_imports = "silent"
+warn_return_any = false
+ignore_missing_imports = true

@@ -1,27 +1,20 @@
+# Update versions with: pre-commit autoupdate
 repos:
--   repo: https://github.com/asottile/reorder_python_imports
-    rev: v2.6.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.8.3
     hooks:
-    -   id: reorder-python-imports
--   repo: https://github.com/ambv/black
-    rev: 22.6.0
+      # Run the linter.
+      - id: ruff
+        args:
+        - "--fix"
+        - "--show-fixes"
+       # Run the formatter.
+      - id: ruff-format
+
+  # Add mypy for static type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
     hooks:
-    - id: black
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
-    hooks:
-    - id: end-of-file-fixer
-      exclude: '.bumpversion.cfg'
-    - id: trailing-whitespace
-      exclude: '.bumpversion.cfg'
-    - id: check-case-conflict
-    - id: check-merge-conflict
-    - id: check-yaml
-      args: [ '--unsafe' ]
-    - id: detect-private-key
-    - id: forbid-new-submodules
-    - id: check-json
-    - id: pretty-format-json
-      args: ['--autofix', '--indent=4', '--no-ensure-ascii', ]
-    - id: check-added-large-files
-    - id: flake8
+      - id: mypy
+        additional_dependencies: ["types-toml"]

@@ -1,21 +1,21 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
 import logging
 import time
+from pathlib import Path
 
 try:
-    import RPi.GPIO as GPIO
     import picamera
+    import RPi.GPIO as GPIO
     from picamera import mmal
 except ImportError:
     raise ImportError(
-        "Can only run camera module on Raspberry Pi with RPi.GPIO and picamera packages installed."
+        "Can only run camera module on Raspberry Pi "
+        "with RPi.GPIO and picamera packages installed."
     )
-from rpi_camera_colony.files import close_file_safe
-from rpi_camera_colony.files import DummyFileObject
 from rpi_camera_colony.acquisition.streaming import StreamingOutput
+from rpi_camera_colony.files import DummyFileObject, close_file_safe
 
 GPIO.setwarnings(False)
 GPIO.cleanup()
@@ -36,7 +36,7 @@ class VideoEncoder(picamera.PiVideoEncoder):
     _ttl_out_duration = 0.001  # 1ms
 
     def __init__(self, *args, **kwargs):
-        super(VideoEncoder, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         for arg, val in kwargs.items():
             if hasattr(self, arg):
@@ -64,14 +64,15 @@ class VideoEncoder(picamera.PiVideoEncoder):
         self._ttl_out_duration = value
 
     def start(self, output, motion_output=None):
-        super(VideoEncoder, self).start(output, motion_output)
+        super().start(output, motion_output)
 
     def close(self):
-        super(VideoEncoder, self).close()
+        super().close()
 
         if self.ttl_count != self.frame_count:
             logging.warning(
-                f"Frame count ({self.frame_count}) and TTL count ({self.ttl_count}) do not match."
+                f"Frame count ({self.frame_count}) and TTL count ({self.ttl_count}) "
+                f"do not match."
             )
 
     def _callback_write(self, buf, key=None):
@@ -85,12 +86,10 @@ class VideoEncoder(picamera.PiVideoEncoder):
 
                 self.ttl_count += 1
 
-            self.parent._write_timestamps_frame_ttl_out(
-                buf.pts, self.parent.timestamp
-            )
+            self.parent._write_timestamps_frame_ttl_out(buf.pts, self.parent.timestamp)
             self.frame_count += 1
 
-        return super(VideoEncoder, self)._callback_write(buf)
+        return super()._callback_write(buf)
 
 
 class Camera(picamera.PiCamera):
@@ -117,7 +116,7 @@ class Camera(picamera.PiCamera):
                 setattr(self, attr, value)
                 logging.debug(f"Set {self}, attr {attr} to value {value}")
 
-        super(Camera, self).__init__(
+        super().__init__(
             framerate=framerate,
             resolution=resolution,
             clock_mode=self.clock_mode,
@@ -150,12 +149,8 @@ class Camera(picamera.PiCamera):
     def ttl_in_pin(self, value):
         self._ttl_in_pin = value
 
-    def _get_video_encoder(
-        self, camera_port, output_port, format, resize, **options
-    ):
-        video_encoder = VideoEncoder(
-            self, camera_port, output_port, format, resize, **options
-        )
+    def _get_video_encoder(self, camera_port, output_port, format, resize, **options):
+        video_encoder = VideoEncoder(self, camera_port, output_port, format, resize, **options)
         video_encoder.ttl_out_pin = self.ttl_out_pin
         video_encoder.ttl_out_duration = self.ttl_out_duration
         return video_encoder
@@ -166,16 +161,12 @@ class Camera(picamera.PiCamera):
 
     def _write_timestamps_ttl_in(self, x=None):
         if self.file_timestamps_ttl_in is not None:
-            self.file_timestamps_ttl_in.write(
-                f"{self.timestamp},{_get_realtime()}\n"
-            )
+            self.file_timestamps_ttl_in.write(f"{self.timestamp},{_get_realtime()}\n")
             logging.info(f"TTL-in detected at {self.timestamp}")
 
     def _write_timestamps_frame_ttl_out(self, cam_ts, frame_ts):
         if self.file_timestamps_ttl_out is not None:
-            self.file_timestamps_ttl_out.write(
-                f"{cam_ts},{frame_ts},{_get_realtime()}\n"
-            )
+            self.file_timestamps_ttl_out.write(f"{cam_ts},{frame_ts},{_get_realtime()}\n")
 
     def start_recording(self, output_files=None, **kwargs):
         if isinstance(output_files["video"], DummyFileObject):
@@ -185,31 +176,23 @@ class Camera(picamera.PiCamera):
 
         if self.ttl_out_pin is not None:
             # Open TTL file and write header
-            self.file_timestamps_ttl_out = open(output_files["ttl.out"], "w")
-            self.file_timestamps_ttl_out.write(
-                "timestamp_frame,timestamp_ttl,sys_time\n"
-            )
+            self.file_timestamps_ttl_out = Path(output_files["ttl.out"]).open("w")
+            self.file_timestamps_ttl_out.write("timestamp_frame,timestamp_ttl,sys_time\n")
 
         if self.ttl_in_pin is not None:
             logging.debug(f"Setting TTL in pin to {self.ttl_in_pin}")
             # Add event detection callback
             GPIO.setup(self.ttl_in_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-            GPIO.add_event_detect(
-                self.ttl_in_pin, GPIO.RISING, self._write_timestamps_ttl_in
-            )
+            GPIO.add_event_detect(self.ttl_in_pin, GPIO.RISING, self._write_timestamps_ttl_in)
             # Open TTL file and write header
-            self.file_timestamps_ttl_in = open(output_files["ttl.in"], "w")
+            self.file_timestamps_ttl_in = Path(output_files["ttl.in"]).open("w")
             self.file_timestamps_ttl_in.write("timestamp_frame,sys_time\n")
 
-        super(Camera, self).start_recording(
-            output=str(output_files["video"]), **kwargs
-        )
+        super().start_recording(output=str(output_files["video"]), **kwargs)
         if self.stream_video:
             stream_kwargs = kwargs.copy()
             stream_kwargs["format"] = "mjpeg"
-            super(Camera, self).start_recording(
-                output=self.streaming_output, splitter_port=2, **stream_kwargs
-            )
+            super().start_recording(output=self.streaming_output, splitter_port=2, **stream_kwargs)
 
     def stop_recording(self):
         if self.ttl_in_pin is not None:
@@ -217,9 +200,9 @@ class Camera(picamera.PiCamera):
 
         try:
             if self.stream_video:
-                super(Camera, self).stop_recording(splitter_port=2)
+                super().stop_recording(splitter_port=2)
 
-            super(Camera, self).stop_recording()
+            super().stop_recording()
         except BaseException:
             logging.error("CAMERA STOP EXCEPTION")
 
@@ -247,5 +230,6 @@ class Camera(picamera.PiCamera):
         self.exposure_mode = "off"
 
         logging.debug(
-            f"Camera previewing & updated awb_gains={awb_gains}, shutter_speed={self.shutter_speed}"
+            f"Camera previewing & updated awb_gains={awb_gains}, "
+            f"shutter_speed={self.shutter_speed}"
         )

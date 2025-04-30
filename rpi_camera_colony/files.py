@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
@@ -11,9 +10,7 @@ def get_datestr():
     return datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
-def make_recording_file_names(
-    path=None, package_id="rcc", ext_sep=".", video_ext="h264"
-):
+def make_recording_file_names(path=None, package_id="rcc", ext_sep=".", video_ext="h264"):
     # basepath, _ = os.path.splitext(str(path))
     basepath = str(path)
     dt = get_datestr()
@@ -30,13 +27,9 @@ def make_recording_file_names(
                 str(video_ext).replace(".", ""),
             ]
         ),
-        "ttl.out": ext_sep.join(
-            [basepath, dt, package_id, name_ttl_out, "csv"]
-        ),
+        "ttl.out": ext_sep.join([basepath, dt, package_id, name_ttl_out, "csv"]),
         "ttl.in": ext_sep.join([basepath, dt, package_id, name_ttl_in, "csv"]),
-        "metadata": ext_sep.join(
-            [basepath, dt, package_id, "metadata", "json"]
-        ),
+        "metadata": ext_sep.join([basepath, dt, package_id, "metadata", "json"]),
     }
 
 
@@ -58,7 +51,7 @@ def close_file_safe(file_handle):
         logging.debug(f"FAILED TO CLOSE FILE:{name}")
 
 
-class DummyFileObject(object):
+class DummyFileObject:
     def __init__(self, *args, **kwargs):
         pass
 

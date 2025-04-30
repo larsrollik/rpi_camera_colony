@@ -1,0 +1,95 @@
+name: pr_to_prod
+
+on:
+  pull_request:
+    branches:
+      - main   # Trigger only on PRs targeting the `main` branch
+    types:
+      - closed # Run only when a PR is closed
+
+jobs:
+  squash_merge_to_prod:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      # Step 1: Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for logs and merging
+
+      # Step 2: Configure Git
+      - name: Configure Git
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      # Step 3: Fetch Latest Changes and Create/Checkout Prod Branch
+      - name: Create or Checkout 'prod' Branch
+        run: |
+          git fetch origin prod || echo "Prod branch does not exist. Initializing."
+          git checkout prod || git checkout --orphan prod
+          git pull origin prod || echo "No existing history to pull."
+          git push origin prod --set-upstream
+
+      # Step 4: Generate Commit Message for Squash Merge
+      - name: Generate Commit Message
+        id: commit_message
+        run: |
+          FEATURE_BRANCH="${{ github.event.pull_request.head.ref }}"
+          NEW_COMMITS=$(git log main --merges --grep="${FEATURE_BRANCH}" --oneline)
+          if [ -z "$NEW_COMMITS" ]; then
+            echo "No new commits to squash merge. Exiting."
+            exit 0
+          fi
+
+          # Generate the commit message
+          COMMIT_MSG="From '${FEATURE_BRANCH}':\n\n$(git log --format='- %s' main..HEAD)"
+
+          # Escape the commit message to make it safe for GITHUB_ENV
+          ESCAPED_COMMIT_MSG=$(echo "$COMMIT_MSG" | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
+
+          # Write the escaped commit message to GITHUB_ENV
+          echo "COMMIT_MSG=${ESCAPED_COMMIT_MSG}" >> $GITHUB_ENV
+
+      # Step 5: Perform Squash Merge and Resolve Conflicts in Favor of Main
+      - name: Squash and Resolve Conflicts in Favor of "main"
+        env:
+          COMMIT_MSG: ${{ steps.commit_message.outputs.COMMIT_MSG }}
+        run: |
+          # Fetch latest changes for safety
+          git fetch origin main
+          git fetch origin prod
+
+          # Checkout 'prod' branch
+          git checkout prod
+
+          # Perform a squash merge from 'main' (staged changes without committing)
+          git merge --squash main || true
+
+          # Resolve conflicts in favor of 'main'
+          git checkout -f main -- .
+
+          # Stage all changes to mark conflicts as resolved
+          git add .
+
+          # Ensure there are no empty changes before committing
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            # Ensure there's a commit message before committing
+            if [ -z "$COMMIT_MSG" ]; then
+              COMMIT_MSG="Squash merge from 'main' into 'prod'."
+            fi
+
+            # Commit the squashed changes with the generated message
+            git commit -m "$COMMIT_MSG"
+
+            # Push the updated 'prod' branch to the repository
+            git push origin prod
+          fi

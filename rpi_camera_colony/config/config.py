@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
 import json
 import logging
-import os
 import socket
 from pathlib import Path
 
@@ -19,14 +17,14 @@ def load_config(config_path=None, config_spec_path=None, ignore_errors=True):
     if not config_path:
         raise ValueError("Need to specify a path for config_path.")
 
-    config_path = Path(os.path.expanduser(config_path))
+    config_path = Path(config_path).expanduser()
     if not config_path.exists():
         raise FileNotFoundError(f"File {config_path} not found.")
 
     if not config_spec_path:
         config_spec_path = Path(__file__).parent / "spec.config"
 
-    config_spec_path = Path(os.path.expanduser(config_spec_path))
+    config_spec_path = Path(config_spec_path).expanduser()
     if not config_spec_path.exists():
         raise FileNotFoundError(f"File {config_spec_path} not found.")
 
@@ -42,11 +40,10 @@ def load_config(config_path=None, config_spec_path=None, ignore_errors=True):
         logging.info("Configuration file FAILED validation.")
         raise ValueError("Validation failed")
     else:
-        if log_level_name_to_value("DEBUG") >= log_level_name_to_value(
-            config["log"]["level"]
-        ):
+        if log_level_name_to_value("DEBUG") >= log_level_name_to_value(config["log"]["level"]):
             logging.debug(
-                f"Config validation was successful for: \n {json.dumps(config.dict(), sort_keys=True, indent=4)}"
+                f"Config validation was successful for: \n "
+                f"{json.dumps(config.dict(), sort_keys=True, indent=4)}"
             )
 
     return config
@@ -71,7 +68,8 @@ def setup_logging_via_socket(
     logger.setLevel(getattr(logging, level))
     logger.addHandler(logging_handler)
     logging.info(
-        f"Logging initialised for {address_or_socket} with topic {root_topic} and level {level}."
+        f"Logging initialised for {address_or_socket} "
+        f"with topic {root_topic} and level {level}."
     )
 
 
@@ -91,8 +89,8 @@ def get_local_ip_address():
 
 def get_interface_mac_address(interface="eth0"):
     try:
-        f = open(f"/sys/class/net/{interface}/address")
-        mac = f.read().strip("\n")
+        with Path(f"/sys/class/net/{interface}/address").open("r") as f:
+            mac = f.read().strip("\n")
     except BaseException:
         mac = "00:00:00:00:00:00"
 

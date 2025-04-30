@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
@@ -6,16 +5,12 @@ import logging
 import subprocess
 import sys
 import time
-from multiprocessing import Process
-from multiprocessing import Queue
-from threading import Thread
+from multiprocessing import Process, Queue
 
 import psutil
-from PyQt5.QtCore import QThread
 
 from rpi_camera_colony.acquisition.remote_control import execute_in_commandline
-from rpi_camera_colony.control.conductor import Conductor
-from rpi_camera_colony.control.conductor import parse_args_for_conductor
+from rpi_camera_colony.control.conductor import Conductor, parse_args_for_conductor
 
 
 def _get_default_python_path():
@@ -27,7 +22,7 @@ def _get_default_python_path():
     )
 
 
-class ConductorAsSubprocess(object):
+class ConductorAsSubprocess:
     python_path = None
     conductor_args = None
     conductor_args_list = []
@@ -39,7 +34,7 @@ class ConductorAsSubprocess(object):
         conductor_args=dict,
         python_path=None,
     ):
-        super(ConductorAsSubprocess, self).__init__()
+        super().__init__()
 
         self.conductor_args = conductor_args
 
@@ -63,7 +58,7 @@ class ConductorAsSubprocess(object):
             stderr=subprocess.PIPE,
         )
         logging.debug(
-            f"Launched subprocess for rcc Conductor with pid={self.conductor_process.pid}"
+            f"Launched subprocess for rcc Conductor " f"with pid={self.conductor_process.pid}"
         )
 
     # def __enter__(self):
@@ -88,7 +83,7 @@ class ConductorAsProcess(Process):
     conductor = None
 
     def __init__(self, conductor_args=None, kill_queue=None):
-        super(ConductorAsProcess, self).__init__()
+        super().__init__()
 
         self.conductor_args = conductor_args
         self.kill_queue = kill_queue
@@ -120,9 +115,7 @@ if __name__ == "__main__":
     args_for_conductor = parse_args_for_conductor()
     kill_queue = Queue()  # Send value into this queue to stop the Conductor
 
-    conductor_process = ConductorAsProcess(
-        conductor_args=args_for_conductor, kill_queue=kill_queue
-    )
+    conductor_process = ConductorAsProcess(conductor_args=args_for_conductor, kill_queue=kill_queue)
     conductor_process.run()
 
     while True:

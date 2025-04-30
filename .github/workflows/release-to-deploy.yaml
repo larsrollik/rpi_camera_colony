@@ -1,0 +1,99 @@
+name: release_to_deploy
+
+#on:
+#  push:
+#    branches:
+#      - prod
+
+on:
+  workflow_run:
+    workflows: [pr_to_prod]
+    types:
+      - completed
+
+jobs:
+  check-version-and-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toml
+        run: |
+          python -m pip install toml  # Install toml to parse pyproject.toml
+
+      - name: Get version from pyproject.toml
+        id: get-version
+        run: |
+          VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT  # Set version as an output
+
+      - name: Validate version and check if tag exists
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
+        run: |
+          if [[ "$VERSION" =~ (dev|rc)[0-9]*$ ]]; then
+            echo "Skipping release for version $VERSION. This is a pre-release version (dev/rc)."
+            exit 0  # Skip release for dev/rc versions
+          fi
+
+          TAG_EXISTS=$(git tag -l "v$VERSION")
+          if [[ -n "$TAG_EXISTS" ]]; then
+            echo "Tag v$VERSION already exists. Skipping release."
+            exit 0  # Skip release if tag exists
+          fi
+
+          echo "Version $VERSION is valid and tag doesn't exist. Proceeding with release."
+
+
+  print-version:
+    needs: [check-version-and-tag]
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.check-version-and-tag.outputs.version }}
+    steps:
+      - name: Print version
+        run: |
+          echo "The version from pyproject.toml is: v${VERSION}"
+
+
+  release:
+    needs: [check-version-and-tag]
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.check-version-and-tag.outputs.version }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Release
+        run: |
+          gh release create "v${VERSION}" \
+            --title "Release v${VERSION}" \
+            --notes "Release: v${VERSION}"
+
+
+  deploy:
+    needs: release
+    if: success()  # Proceed if release creation is successful
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U setuptools setuptools_scm wheel twine
+      - name: Build and publish
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/*

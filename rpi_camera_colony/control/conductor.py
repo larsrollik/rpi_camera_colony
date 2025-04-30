@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
@@ -11,12 +10,13 @@ from rpi_camera_colony.acquisition.remote_control import (
     RemoteAcquisitionControl,
 )
 from rpi_camera_colony.config.config import load_config
-from rpi_camera_colony.files import close_file_safe
-from rpi_camera_colony.files import get_datestr
+from rpi_camera_colony.files import close_file_safe, get_datestr
 from rpi_camera_colony.log import log_level_name_to_value
-from rpi_camera_colony.network_communication import find_available_port
-from rpi_camera_colony.network_communication import ListenerStream
-from rpi_camera_colony.network_communication import SocketCommunication
+from rpi_camera_colony.network_communication import (
+    ListenerStream,
+    SocketCommunication,
+    find_available_port,
+)
 
 
 def parse_args_for_conductor():
@@ -36,7 +36,7 @@ def parse_args_for_conductor():
         "-n",
         type=str,
         default="_test_rcc_conductor_parser__" + get_datestr(),
-        help="Acquisition name [only name; path on Conductor should be defined in config]",
+        help="Acquisition name " "[only name; path on Conductor should be defined in config]",
     )
     parser.add_argument(
         "--calibration",
@@ -59,7 +59,7 @@ def parse_args_for_conductor():
     return parser.parse_args()
 
 
-class Conductor(object):
+class Conductor:
     active = True
 
     config_data = None
@@ -108,24 +108,20 @@ class Conductor(object):
         **kwargs,
     ):
         """Create new Acquisition Conductor."""
-        super(Conductor, self).__init__()
+        super().__init__()
 
         self.config_file = config_file
         self._load_config()
 
         self.debug = debug
-        self._log_level = (
-            "DEBUG" if self.debug else self.config_data["log"]["level"]
-        )
+        self._log_level = "DEBUG" if self.debug else self.config_data["log"]["level"]
         logger = logging.getLogger()
         logger.setLevel(getattr(logging, self._log_level))
 
         self.acquisition_group = acquisition_group or self.acquisition_group
         self.acquisition_name = acquisition_name or self.acquisition_name
         self.acquisition_time = acquisition_time or self.acquisition_time
-        self._logging_stream_callback = (
-            logging_stream_callback or self._callback_receiver
-        )
+        self._logging_stream_callback = logging_stream_callback or self._callback_receiver
         self.auto_init = auto_init
         self.auto_init_remote = auto_init_remote
         self.run_for_calibration = run_for_calibration
@@ -136,51 +132,36 @@ class Conductor(object):
                 "acquisition_name", "default_acq_name_get"
             )
 
-        # Add acquisition group if name has group segment, when split by standard divider
+        # Add acquisition group if name has group segment,
+        # when split by standard divider
         acq_name_parts = self.acquisition_name.split(acquisition_group_divider)
         if not self.acquisition_group and len(acq_name_parts) > 1:
             self.acquisition_group = acq_name_parts[0]
 
-        self.acquisition_time = (
-            acq_name_parts[1] if len(acq_name_parts) > 1 else get_datestr()
-        )
+        self.acquisition_time = acq_name_parts[1] if len(acq_name_parts) > 1 else get_datestr()
 
-        self.config_data["general"][
-            "acquisition_group"
-        ] = self.acquisition_group
+        self.config_data["general"]["acquisition_group"] = self.acquisition_group
         self.config_data["general"]["acquisition_name"] = self.acquisition_name
         self.config_data["general"]["acquisition_time"] = self.acquisition_time
-        self.config_data["general"][
-            "run_for_calibration"
-        ] = self.run_for_calibration
+        self.config_data["general"]["run_for_calibration"] = self.run_for_calibration
 
-        for c in self.config_data["controllers"].keys():
-            self.config_data["controllers"][c][
-                "acquisition_time"
-            ] = self.acquisition_time
-            self.config_data["controllers"][c][
-                "acquisition_group"
-            ] = self.acquisition_group
+        for c in self.config_data["controllers"]:
+            self.config_data["controllers"][c]["acquisition_time"] = self.acquisition_time
+            self.config_data["controllers"][c]["acquisition_group"] = self.acquisition_group
 
             if self.run_for_calibration:
-                self.config_data["controllers"][c][
-                    "framerate"
-                ] = self.calibration_framerate
+                self.config_data["controllers"][c]["framerate"] = self.calibration_framerate
 
         self._log_to_file = self.config_data["log"].get("log_to_file")
         self._log_to_console = self.config_data["log"].get("log_to_console")
 
         # Execute main components
         self._open_network_comms()
-        logging.info(
-            f"Waiting {delay_for_networking}s for networking to come up.."
-        )
+        logging.info(f"Waiting {delay_for_networking}s for networking to come up..")
         time.sleep(delay_for_networking)
 
         self._make_acquisition_controllers(auto_init=auto_init_remote)
-        logging.info(
-            f"Waiting {delay_for_remote_instance}s for remote instance to listen.."
-        )
+        logging.info(f"Waiting {delay_for_remote_instance}s for remote instance to listen..")
         time.sleep(delay_for_remote_instance)
 
     def __enter__(self):
@@ -199,19 +180,12 @@ class Conductor(object):
         # Find available socket ports
         start_port = int(self.config_data["log"].get("port"))
         address = self.config_data["log"].get("address")
-        available_port_logging = find_available_port(
-            start_port=start_port, ip_address=address
-        )
+        available_port_logging = find_available_port(start_port=start_port, ip_address=address)
         start_port = int(self.config_data["control"].get("port"))
         address = self.config_data["control"].get("address")
-        available_port_control = find_available_port(
-            start_port=start_port, ip_address=address
-        )
+        available_port_control = find_available_port(start_port=start_port, ip_address=address)
 
-        assert (
-            available_port_logging is not None
-            and available_port_control is not None
-        )
+        assert available_port_logging is not None and available_port_control is not None
         self.config_data["log"]["port"] = available_port_logging
         self.config_data["control"]["port"] = available_port_control
 
@@ -242,10 +216,8 @@ class Conductor(object):
         self._comms_stream.start()
 
         if self._log_to_file is not None and self._log_to_file:
-            log_file = ".".join(
-                [self.config_data["log"].get("log_file"), get_datestr(), "log"]
-            )
-            self._log_file = open(log_file, "w")
+            log_file = ".".join([self.config_data["log"].get("log_file"), get_datestr(), "log"])
+            self._log_file = Path(log_file).open("w")
             self._write_to_log(f"# Log for: {self.acquisition_name}\n")
             logging.info(f"Logging remote messages to: {self._log_file.name}")
 
@@ -253,7 +225,9 @@ class Conductor(object):
         topic, message = [m.decode() for m in message]
         instance_name, log_level_on_remote = topic.split(".")
 
-        try:  # FIXME: Why is ARM logger not formatted correctly ? Missing timestamps and dash separators.
+        # FIXME: Why is ARM logger not formatted correctly ?
+        #  Missing timestamps and dash separators.
+        try:
             (
                 remote_dt,
                 remote_level,
@@ -271,11 +245,7 @@ class Conductor(object):
         if self._log_to_console and message_level >= target_level:
             logging.info(out_string)
 
-        if (
-            self._log_to_file is not None
-            and self._log_to_file
-            and self._log_file is not None
-        ):
+        if self._log_to_file is not None and self._log_to_file and self._log_file is not None:
             self._write_to_log(out_string)
 
     def _write_to_log(self, out_string):
@@ -284,11 +254,11 @@ class Conductor(object):
             self._log_file.flush()
 
     def _make_acquisition_controllers(self, auto_init=True):
-        """Make local objects to handle interaction with remote acquisition controller."""
+        """Make local objects to handle interaction
+        with remote acquisition controller.
+        """
         for instance_name, _ in self.config_data["controllers"].items():
-            self._acquisition_controllers[
-                instance_name
-            ] = RemoteAcquisitionControl(
+            self._acquisition_controllers[instance_name] = RemoteAcquisitionControl(
                 instance_name=instance_name,
                 config_data=self.config_data,
                 control_socket_wrapper=self._control_socket,
@@ -296,7 +266,9 @@ class Conductor(object):
             )
 
     def initialise_acquisition_conductors(self):
-        """Start up remote acquisition & transmit config_data in preparation for acquisition."""
+        """Start up remote acquisition
+        & transmit config_data in preparation for acquisition.
+        """
         for _, acq in self._acquisition_controllers.items():
             acq.initialise()
 
@@ -305,9 +277,7 @@ class Conductor(object):
         for _, acq in self._acquisition_controllers.items():
             acq.transmit_settings()
 
-        time.sleep(
-            1
-        )  # Essential delay to give remote time to process settings
+        time.sleep(1)  # Essential delay to give remote time to process settings
 
         for _, acq in self._acquisition_controllers.items():
             acq.start_acquisition()
@@ -334,11 +304,7 @@ class Conductor(object):
         if self.__cleaned_up:
             return
 
-        if (
-            self._log_to_file is not None
-            and self._log_to_file
-            and self._log_file is not None
-        ):
+        if self._log_to_file is not None and self._log_to_file and self._log_file is not None:
             close_file_safe(self._log_file)
 
         if self.acquiring:

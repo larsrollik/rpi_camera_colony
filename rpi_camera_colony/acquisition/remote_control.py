@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
@@ -35,14 +34,9 @@ def dict_to_list(in_dict: dict = None):
 
 
 def execute_in_commandline(cmd=None, return_std=False, **kwargs):
-    if return_std:
-        output_location = subprocess.PIPE
-    else:
-        output_location = subprocess.DEVNULL
-
     kwargs.update(
         {
-            "stdout": output_location,
+            "stdout": subprocess.PIPE if return_std else subprocess.DEVNULL,
             "stderr": subprocess.PIPE,
         }
     )
@@ -52,8 +46,10 @@ def execute_in_commandline(cmd=None, return_std=False, **kwargs):
     )
 
 
-class RemoteAcquisitionControl(object):
-    """Manager to communicate with remote RPi. Instantiates PiAcquisitionControl on RPi."""
+class RemoteAcquisitionControl:
+    """Manager to communicate with remote RPi.
+    Instantiates PiAcquisitionControl on RPi.
+    """
 
     instance_name = None
     control_socket_wrapper = None
@@ -73,28 +69,20 @@ class RemoteAcquisitionControl(object):
         auto_init=False,
         **kwargs,
     ):
-        super(RemoteAcquisitionControl, self).__init__()
+        super().__init__()
 
         if config_data is None and "config_file" not in kwargs:
-            raise ValueError(
-                "Require either config_data object or config_file path."
-            )
+            raise ValueError("Require either config_data object or config_file path.")
 
         self.instance_name = instance_name
-        self.config_data = config_data or load_config(
-            config_path=kwargs.get("config_file")
-        )
+        self.config_data = config_data or load_config(config_path=kwargs.get("config_file"))
         self.control_socket_wrapper = control_socket_wrapper
 
         self.remote_python_interpreter = self.config_data["general"].get(
             "remote_python_interpreter"
         )
-        self.remote_python_entrypoint = self.config_data["general"].get(
-            "remote_python_entrypoint"
-        )
-        self.remote_address = self.config_data["controllers"][
-            self.instance_name
-        ].get("address")
+        self.remote_python_entrypoint = self.config_data["general"].get("remote_python_entrypoint")
+        self.remote_address = self.config_data["controllers"][self.instance_name].get("address")
 
         for attr, value in kwargs.items():
             if hasattr(self, attr):
@@ -142,17 +130,13 @@ class RemoteAcquisitionControl(object):
             # logging.debug("Remote is closed.")
             return
 
-        settings_for_this_instance = self.config_data["controllers"].get(
-            self.instance_name
-        )
+        settings_for_this_instance = self.config_data["controllers"].get(self.instance_name)
 
         # Patch general overwrite into controller settings
-        general_setting_has_priority = self.config_data["general"][
-            "general_setting_has_priority"
+        general_setting_has_priority = self.config_data["general"]["general_setting_has_priority"]
+        general_settings_to_patch_into_controller = self.config_data["general"][
+            "general_settings_to_patch_into_controller"
         ]
-        general_settings_to_patch_into_controller = self.config_data[
-            "general"
-        ]["general_settings_to_patch_into_controller"]
         if general_setting_has_priority:
             for key in general_settings_to_patch_into_controller:
                 overwrite_value = self.config_data["general"].get(key)
@@ -181,23 +165,15 @@ class RemoteAcquisitionControl(object):
         self.pkill_remote()
         time.sleep(1)
 
-        instance_settings = self.config_data["controllers"].get(
-            self.instance_name
-        )
+        instance_settings = self.config_data["controllers"].get(self.instance_name)
 
         command_dict = {
             "-m": "rpi_camera_colony.acquisition",
             "--instance-name": self.instance_name,
-            "--acquisition-name": self.config_data["general"][
-                "acquisition_name"
-            ],
-            "--acquisition-group": self.config_data["general"][
-                "acquisition_group"
-            ],
+            "--acquisition-name": self.config_data["general"]["acquisition_name"],
+            "--acquisition-group": self.config_data["general"]["acquisition_group"],
             "--data-path": self.config_data["general"]["remote_data_path"],
-            "--max-acquisition-time": self.config_data["general"][
-                "max_acquisition_time"
-            ],
+            "--max-acquisition-time": self.config_data["general"]["max_acquisition_time"],
             "--log-ip": self.config_data["log"]["address"],
             "--log-port": self.config_data["log"]["port"],
             "--log-level": self.config_data["log"]["level"],
@@ -220,7 +196,8 @@ class RemoteAcquisitionControl(object):
         execute_in_commandline(cmd=cmd)
 
         logging.debug(
-            f"Initialised remote acquisition controller for: {self.remote_address} known as: {self.instance_name}."
+            f"Initialised remote acquisition controller for: "
+            f"{self.remote_address} known as: {self.instance_name}."
         )
         logging.debug(command_dict)
         logging.debug(f"CMD: {cmd}")
@@ -242,9 +219,7 @@ class RemoteAcquisitionControl(object):
 
     def cleanup(self):
         try:
-            self.send_command(
-                cmd_type="command", message_dict={"status": "close"}
-            )
+            self.send_command(cmd_type="command", message_dict={"status": "close"})
             time.sleep(0.5)
             self.connected = False
         except BaseException:
@@ -294,7 +269,8 @@ if __name__ == "__main__":
         default=None,
         type=str,
         help="Socket address for command stream. "
-        "Required on command line, but if object used in script, can also take zmq command_socket.",
+        "Required on command line, but if object used in script,"
+        " can also take zmq command_socket.",
     )
     parser_ctrl.add_argument(
         "--auto-init",

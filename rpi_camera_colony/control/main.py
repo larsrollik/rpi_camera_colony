@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
@@ -7,8 +6,7 @@ import time
 
 from tqdm import tqdm
 
-from rpi_camera_colony.control.conductor import Conductor
-from rpi_camera_colony.control.conductor import parse_args_for_conductor
+from rpi_camera_colony.control.conductor import Conductor, parse_args_for_conductor
 from rpi_camera_colony.log import setup_logging_control
 
 
@@ -20,7 +18,8 @@ def main():
         total=args.max_acquisition_time,
         desc="Recording progress",
         unit="seconds",
-        bar_format="{desc}: {percentage:3.0f}%| | {n:.2f}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]",
+        bar_format="{desc}: {percentage:3.0f}%| | {n:.2f}/{total_fmt} "
+        "[{elapsed}<{remaining}, {rate_fmt}{postfix}]",
     )
 
     conductor = Conductor(

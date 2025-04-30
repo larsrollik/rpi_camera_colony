@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
 import argparse
-import logging
-import platform
 import sys
 import time
 
@@ -30,7 +27,8 @@ def main():
         total=7200,
         desc="Recording progress",
         unit="seconds",
-        bar_format="{desc}: {percentage:3.0f}%| | {n:.2f}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]",
+        bar_format="{desc}: {percentage:3.0f}%| | {n:.2f}/{total_fmt} "
+        "[{elapsed}<{remaining}, {rate_fmt}{postfix}]",
     )
 
     conductor = Conductor(

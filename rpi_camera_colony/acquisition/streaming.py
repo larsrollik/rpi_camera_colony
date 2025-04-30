@@ -38,9 +38,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             self.send_header("Age", 0)
             self.send_header("Cache-Control", "no-cache, private")
             self.send_header("Pragma", "no-cache")
-            self.send_header(
-                "Content-Type", "multipart/x-mixed-replace; boundary=FRAME"
-            )
+            self.send_header("Content-Type", "multipart/x-mixed-replace; boundary=FRAME")
             self.end_headers()
             try:
                 while True:
@@ -48,9 +46,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     if hasattr(self, attribute_name):
                         obj = getattr(self, attribute_name)
                     else:
-                        raise AttributeError(
-                            f"{self} has no attribute '{attribute_name}'"
-                        )
+                        raise AttributeError(f"{self} has no attribute '{attribute_name}'")
 
                     with obj.condition:
                         obj.condition.wait()

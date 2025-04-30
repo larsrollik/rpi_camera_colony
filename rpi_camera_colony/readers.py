@@ -1,6 +1,5 @@
 import json
 import logging
-from glob import glob
 from pathlib import Path
 
 import pandas as pd
@@ -8,7 +7,7 @@ import pandas.errors
 
 
 def __read_json(file=None):
-    with open(file, "r") as f:
+    with Path(file).open("r") as f:
         data = f.read()
 
     try:
@@ -26,7 +25,9 @@ def __exclude_files_by_pattern(file_list=None):
 
 
 def __get_file_type_identifier(file=None, namespace_divider=None):
-    """Return identifier part. Move to new namespace (underscores replaced with dots) for dict keys."""
+    """Return identifier part.
+    Move to new namespace (underscores replaced with dots) for dict keys.
+    """
     return str(file.split(namespace_divider)[-1].replace("_", "."))
 
 
@@ -48,16 +49,14 @@ def read_session_data(session_dir=None, namespace_signature=".rcc."):
     session_dir = Path(session_dir)
     assert session_dir.exists()
 
-    rcc_files_in_dir = glob(str(session_dir / f"*{namespace_signature}*"))
+    rcc_files_in_dir = Path(session_dir).glob(f"*{namespace_signature}*")
     rcc_files_in_dir = __exclude_files_by_pattern(rcc_files_in_dir)
 
     session_data = {}
     for filepath in rcc_files_in_dir:
         filename = Path(filepath).name
         cam = filename.split(".")[1]
-        ftype = __get_file_type_identifier(
-            file=filename, namespace_divider=namespace_signature
-        )
+        ftype = __get_file_type_identifier(file=filename, namespace_divider=namespace_signature)
 
         if cam not in session_data:
             logging.debug(f"New camera found in session '{filename}': {cam}")
@@ -80,7 +79,8 @@ def read_session_data(session_dir=None, namespace_signature=".rcc."):
             try:
                 csv_data = pd.read_csv(filepath)
 
-                # Assert that matches TTL-in (shape[1]=1) or TTL-out (shape[1]=2) column layout
+                # Assert that matches TTL-in (shape[1]=1)
+                # or TTL-out (shape[1]=2) column layout
                 assert csv_data.shape[1] <= 3
 
                 # Remove leading hash and whitespace from column names (legacy naming)
@@ -94,14 +94,10 @@ def read_session_data(session_dir=None, namespace_signature=".rcc."):
 
         elif ftype == "video.h264":
             session_data[cam]["has_h264"] = True
-            session_data[cam]["video_file_h264"] = str(
-                Path(filepath).relative_to(session_dir)
-            )
+            session_data[cam]["video_file_h264"] = str(Path(filepath).relative_to(session_dir))
 
         elif ftype == "video.h264.mp4":
             session_data[cam]["has_mp4"] = True
-            session_data[cam]["video_file_mp4"] = str(
-                Path(filepath).relative_to(session_dir)
-            )
+            session_data[cam]["video_file_mp4"] = str(Path(filepath).relative_to(session_dir))
 
     return session_data

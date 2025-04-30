@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
@@ -11,8 +10,10 @@ import time
 import tqdm
 
 import rpi_camera_colony
-from rpi_camera_colony.config.config import get_local_ip_address
-from rpi_camera_colony.config.config import setup_logging_via_socket
+from rpi_camera_colony.config.config import (
+    get_local_ip_address,
+    setup_logging_via_socket,
+)
 from rpi_camera_colony.files import get_datestr
 from rpi_camera_colony.network_communication import SocketCommunication
 
@@ -186,7 +187,8 @@ def main():
         total=max_time,
         desc="Recording progress",
         unit="seconds",
-        bar_format="{desc}: {percentage:3.0f}%| | {n:.2f}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]",
+        bar_format="{desc}: {percentage:3.0f}%| | {n:.2f}/{total_fmt} "
+        "[{elapsed}<{remaining}, {rate_fmt}{postfix}]",
     )
 
     # Run acquisition

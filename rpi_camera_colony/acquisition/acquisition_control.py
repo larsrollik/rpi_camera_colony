@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
@@ -7,26 +6,28 @@ import logging
 from pathlib import Path
 from threading import Thread
 
-from rpi_camera_colony.acquisition.streaming import StreamingHandler
-from rpi_camera_colony.acquisition.streaming import StreamingServer
-from rpi_camera_colony.config.config import get_interface_mac_address
-from rpi_camera_colony.config.config import get_local_ip_address
-from rpi_camera_colony.files import DummyFileObject
-from rpi_camera_colony.files import get_datestr
-from rpi_camera_colony.files import make_recording_file_names
-from rpi_camera_colony.network_communication import ListenerStream
-from rpi_camera_colony.network_communication import SocketCommunication
+from rpi_camera_colony.acquisition.streaming import StreamingHandler, StreamingServer
+from rpi_camera_colony.config.config import (
+    get_interface_mac_address,
+    get_local_ip_address,
+)
+from rpi_camera_colony.files import (
+    DummyFileObject,
+    get_datestr,
+    make_recording_file_names,
+)
+from rpi_camera_colony.network_communication import ListenerStream, SocketCommunication
 
 try:
     from rpi_camera_colony.acquisition.camera import Camera
 except ImportError:
     logging.warning(
-        "Will exit on error during PiAcquisitionControl init due to missing Camera import."
+        "Will exit on error during PiAcquisitionControl init " "due to missing Camera import."
     )
     raise ImportError("Failed to import picamera")
 
 
-class PiAcquisitionControl(object):
+class PiAcquisitionControl:
     active = True
 
     camera = None
@@ -65,16 +66,14 @@ class PiAcquisitionControl(object):
         control_stream_port=None,
         **kwargs,
     ):
-        super(PiAcquisitionControl, self).__init__()
+        super().__init__()
 
         self.instance_name = instance_name or self.instance_name
         self.data_path = data_path or self.data_path
         self.acquisition_group = acquisition_group or self.acquisition_group
         self.acquisition_name = acquisition_name or self.acquisition_name
         self.control_stream_ip = control_stream_ip or self.control_stream_ip
-        self.control_stream_port = (
-            control_stream_port or self.control_stream_port
-        )
+        self.control_stream_port = control_stream_port or self.control_stream_port
 
         for attr, value in kwargs.items():
             if hasattr(self, attr):
@@ -129,8 +128,8 @@ class PiAcquisitionControl(object):
         }
         metadata["mac_address"] = get_interface_mac_address()
 
-        save_path = self.acquisition_files["metadata"]
-        with open(save_path, "w") as f:
+        save_path = Path(self.acquisition_files["metadata"])
+        with save_path.open("w") as f:
             json.dump(metadata, f, indent=4, sort_keys=True)
 
         if not Path(save_path).exists():
@@ -140,49 +139,39 @@ class PiAcquisitionControl(object):
         # Paths
         file_base = ".".join([self.acquisition_name, self.instance_name])
         acquisition_file_base_path = (
-            Path(self.data_path)
-            / self.acquisition_group
-            / self.acquisition_name
-            / file_base
+            Path(self.data_path) / self.acquisition_group / self.acquisition_name / file_base
         )
         acquisition_file_base_path.parent.mkdir(parents=True, exist_ok=True)
         if not acquisition_file_base_path.parent.exists():
-            err_msg = f"Tried to make dir {str(acquisition_file_base_path.parent)}, but not found on check."
+            err_msg = (
+                f"Tried to make dir {str(acquisition_file_base_path.parent)}, "
+                f"but not found on check."
+            )
             logging.error(err_msg)
             raise FileNotFoundError(err_msg)
         self.acquisition_file_base = str(acquisition_file_base_path)
         self.acquisition_files = make_recording_file_names(
             path=self.acquisition_file_base,
         )
-        logging.debug(
-            f"Files:\n{json.dumps(self.acquisition_files, sort_keys=True, indent=4)}"
-        )
+        logging.debug(f"Files:\n{json.dumps(self.acquisition_files, sort_keys=True, indent=4)}")
 
     def _start_network_stream(self):
         if self.stream_video and self.camera.streaming_output is not None:
             self._stream_handler_handle = StreamingHandler
-            self._stream_handler_handle.output_from_camera = (
-                self.camera.streaming_output
-            )
+            self._stream_handler_handle.output_from_camera = self.camera.streaming_output
             self._stream_server = StreamingServer(
                 (self.stream_ip, self.stream_port), self._stream_handler_handle
             )
 
-            self._stream_thread = Thread(
-                target=self._stream_server.serve_forever
-            )
+            self._stream_thread = Thread(target=self._stream_server.serve_forever)
             self._stream_thread.daemon = True
             self._stream_thread.start()
-            logging.debug(
-                f"Streaming video on {self.stream_ip}:{self.stream_port}"
-            )
+            logging.debug(f"Streaming video on {self.stream_ip}:{self.stream_port}")
 
     def _stop_network_stream(self):
         if self.stream_video and self._stream_server is not None:
             self._stream_server.shutdown()
-            logging.debug(
-                f"Shutting down video stream on {self.stream_ip}:{self.stream_port}"
-            )
+            logging.debug(f"Shutting down video stream on {self.stream_ip}:{self.stream_port}")
 
     def _received_command(self, command):
         command = [c.decode() for c in command]
@@ -204,16 +193,12 @@ class PiAcquisitionControl(object):
             # Camera config_data
             if hasattr(self.camera, setting_name):
                 setattr(self.camera, setting_name, setting_value)
-                logging.debug(
-                    f"setattr(self.camera, {setting_name}, {setting_value})"
-                )
+                logging.debug(f"setattr(self.camera, {setting_name}, {setting_value})")
 
             # PiAcquisitionControl config_data
             if hasattr(self, setting_name):
                 setattr(self, setting_name, setting_value)
-                logging.debug(
-                    f"setattr(self, {setting_name}, {setting_value})"
-                )
+                logging.debug(f"setattr(self, {setting_name}, {setting_value})")
 
     def _update_camera_status(self, new_status="stop"):
         logging.debug(f"New status: {new_status} on {self.instance_name}")
