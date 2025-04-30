@@ -46,12 +46,12 @@ A single configuration file and a few lines of code allow specific and reproduci
 import time
 from rpi_camera_colony.control.conductor import Conductor
 
-conductor = Conductor(settings_file="configuration_file")  # Manages remote RPi
-conductor.start_acquisition()  # Starts recording on all remotes
+conductor = Conductor(settings_file="configuration_file")   # Manages remote RPi
+conductor.start_acquisition()                               # Starts recording on all remotes
 
-time.sleep(20)  # do nothing or something else in between
+time.sleep(20)                                              # Do something else in between or absolutely nothing
 
-conductor.stop_acquisition()  # Stops recording on all remotes
+conductor.stop_acquisition()                                # Stops recording on all remotes
 
 ```
 or on the commandline:
