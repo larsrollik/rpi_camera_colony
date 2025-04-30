@@ -45,14 +45,11 @@ Repository = "https://github.com/larsrollik/rpi_camera_colony"
 [project.optional-dependencies]
 dev = [
     "black",
-    "coverage",
-    "pytest-cov",  # implies: pytest, coverage dependencies
-    "pytest",
-    "gitpython",
     "bump2version",
+    "pytest-cov",  # implies: pytest, coverage dependencies
     "pre-commit",
     "toml",
-    "types-toml",
+    "types-PyYAML",
 ]
 
 [project.entry-points.console_scripts]
