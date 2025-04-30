@@ -45,19 +45,17 @@ Repository = "https://github.com/larsrollik/rpi_camera_colony"
 [project.optional-dependencies]
 dev = [
     "black",
-    "coverage",
-    "pytest-cov",  # implies: pytest, coverage dependencies
-    "pytest",
-    "gitpython",
     "bump2version",
+    "pytest-cov",  # implies: pytest, coverage dependencies
     "pre-commit",
     "toml",
-    "types-toml",
+    "types-PyYAML",
 ]
 
 [project.entry-points.console_scripts]
 rcc-conductor = "rpi_camera_colony.control.main:main"
 rcc-acquisition = "rpi_camera_colony.acquisition.__main__:main"
+rcc-server = "rpi_camera_colony.server.main:run_rcc_server"
 
 [tool.setuptools]
 zip-safe = false
