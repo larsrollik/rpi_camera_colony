@@ -48,11 +48,11 @@ from rpi_camera_colony.control.conductor import Conductor
 
 conductor = Conductor(settings_file="configuration_file")   # Manages remote RPi
 conductor.start_acquisition()                               # Starts recording on all remotes
-
+ 
 time.sleep(20)                                              # Do something else in between or absolutely nothing
-
+ 
 conductor.stop_acquisition()                                # Stops recording on all remotes
-
+ 
 ```
 or on the commandline:
 ```shell
