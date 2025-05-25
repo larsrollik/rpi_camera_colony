@@ -25,7 +25,7 @@ def _get_default_python_path():
 class ConductorAsSubprocess:
     python_path = None
     conductor_args = None
-    conductor_args_list = []
+    conductor_args_list: list = []
     command = None
     conductor_process = None
 
@@ -78,9 +78,9 @@ class ConductorAsSubprocess:
 
 
 class ConductorAsProcess(Process):
-    daemon = True
-    kill_queue = None
-    conductor = None
+    daemon: bool = True
+    kill_queue: Queue
+    conductor: Conductor
 
     def __init__(self, conductor_args=None, kill_queue=None):
         super().__init__()
@@ -113,7 +113,7 @@ class ConductorAsProcess(Process):
 if __name__ == "__main__":
     # Minimal example for sandboxing Conductor in separate process
     args_for_conductor = parse_args_for_conductor()
-    kill_queue = Queue()  # Send value into this queue to stop the Conductor
+    kill_queue: Queue = Queue()  # Send value into this queue to stop the Conductor
 
     conductor_process = ConductorAsProcess(conductor_args=args_for_conductor, kill_queue=kill_queue)
     conductor_process.run()

@@ -1,10 +1,13 @@
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
+from __future__ import annotations
+
 import json
 import logging
 from pathlib import Path
 from threading import Thread
+from typing import Any
 
 from rpi_camera_colony.acquisition.streaming import StreamingHandler, StreamingServer
 from rpi_camera_colony.config.config import (
@@ -45,7 +48,7 @@ class PiAcquisitionControl:
     acquisition_time = get_datestr()
     acquisition_file_base = None
     acquisition_files = None
-    acquisition_settings = {}
+    acquisition_settings: dict[str, Any] = {}
     video_quality = 23
     save_data = True
 

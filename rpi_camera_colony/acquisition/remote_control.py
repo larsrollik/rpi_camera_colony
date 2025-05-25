@@ -1,16 +1,19 @@
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
+from __future__ import annotations
+
 import argparse
 import logging
 import subprocess
 import time
+from typing import Any
 
 import rpi_camera_colony
 from rpi_camera_colony.config.config import load_config
 
 
-def validate_ssh_cli_kwargs(command_dict: dict = None):
+def validate_ssh_cli_kwargs(command_dict: dict[str, Any]) -> dict[str, str]:
     validated_commands = {}
     for command, value in command_dict.items():
         if value is None or value == "":
@@ -27,13 +30,14 @@ def validate_ssh_cli_kwargs(command_dict: dict = None):
     return validated_commands
 
 
-def dict_to_list(in_dict: dict = None):
-    out_list = []
-    [out_list.extend([k, v]) for k, v in in_dict.items()]
+def dict_to_list(in_dict: dict[str, Any]) -> list:
+    out_list: list = []
+    for k, v in in_dict.items():
+        out_list.extend([k, v])
     return out_list
 
 
-def execute_in_commandline(cmd=None, return_std=False, **kwargs):
+def execute_in_commandline(cmd=None, return_std=False, **kwargs) -> subprocess.Popen:
     kwargs.update(
         {
             "stdout": subprocess.PIPE if return_std else subprocess.DEVNULL,
@@ -68,7 +72,7 @@ class RemoteAcquisitionControl:
         control_socket_wrapper=None,
         auto_init=False,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__()
 
         if config_data is None and "config_file" not in kwargs:
