@@ -1,12 +1,15 @@
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
+from __future__ import annotations
+
 import logging
 from threading import Thread
+from typing import Callable
 
 import numpy as np
 import zmq
-from tornado import ioloop
+from tornado.ioloop import IOLoop  # noqa: TC004
 from zmq.eventloop.zmqstream import ZMQStream
 from zmq.utils.strtypes import b
 
@@ -199,14 +202,18 @@ class ListenerStream(Thread):
     """Bundle ZMQ sockets and streams with shared event loop
     in thread for non-blocking callback."""
 
-    socket_dict = {}
-    stream_dict = {}
-    recv_callback_input = None
-    recv_callback_dict = {}
-    ioloop = None
-    daemon = True
+    socket_dict: dict[int, zmq.Socket] = {}
+    stream_dict: dict[str | int, ZMQStream] = {}
+    recv_callback_input: Callable | dict[str, Callable]
+    recv_callback_dict: dict[str | int, Callable] = {}
+    ioloop: IOLoop
+    daemon: bool = True
 
-    def __init__(self, socket_dict: dict, recv_callback_dict: (dict, None)):
+    def __init__(
+        self,
+        socket_dict: dict[int, zmq.Socket],
+        recv_callback_dict: dict[str, Callable] | Callable,
+    ):
         """
         :param socket_dict: dict of ZMQ command_socket objects
         :param recv_callback_dict: dict of functions to call on event on the sockets
@@ -233,7 +240,7 @@ class ListenerStream(Thread):
             new_stream.on_recv(callback=self.recv_callback_dict[socket_name])
             self.stream_dict[socket_name] = new_stream
 
-        self.ioloop = ioloop.IOLoop.instance()
+        self.ioloop = IOLoop.instance()
 
     def run(self):
         self.ioloop.start()

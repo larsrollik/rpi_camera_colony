@@ -1,6 +1,8 @@
 #
 # Author: Lars B. Rollik <L.B.Rollik@protonmail.com>
 # License: BSD 3-Clause
+from __future__ import annotations
+
 import argparse
 import logging
 import time
@@ -68,7 +70,7 @@ class Conductor:
     acquisition_name = None
     acquisition_time = None
 
-    _acquisition_controllers = {}
+    _acquisition_controllers: dict[str, RemoteAcquisitionControl] = {}
     acquiring = False
 
     auto_init = False
@@ -217,7 +219,7 @@ class Conductor:
 
         if self._log_to_file is not None and self._log_to_file:
             log_file = ".".join([self.config_data["log"].get("log_file"), get_datestr(), "log"])
-            self._log_file = Path(log_file).open("w")
+            self._log_file = Path(log_file).open("w")  # noqa: SIM115
             self._write_to_log(f"# Log for: {self.acquisition_name}\n")
             logging.info(f"Logging remote messages to: {self._log_file.name}")
 

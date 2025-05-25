@@ -176,7 +176,7 @@ class Camera(picamera.PiCamera):
 
         if self.ttl_out_pin is not None:
             # Open TTL file and write header
-            self.file_timestamps_ttl_out = Path(output_files["ttl.out"]).open("w")
+            self.file_timestamps_ttl_out = Path(output_files["ttl.out"]).open("w")  # noqa: SIM115
             self.file_timestamps_ttl_out.write("timestamp_frame,timestamp_ttl,sys_time\n")
 
         if self.ttl_in_pin is not None:
@@ -185,7 +185,7 @@ class Camera(picamera.PiCamera):
             GPIO.setup(self.ttl_in_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             GPIO.add_event_detect(self.ttl_in_pin, GPIO.RISING, self._write_timestamps_ttl_in)
             # Open TTL file and write header
-            self.file_timestamps_ttl_in = Path(output_files["ttl.in"]).open("w")
+            self.file_timestamps_ttl_in = Path(output_files["ttl.in"]).open("w")  # noqa: SIM115
             self.file_timestamps_ttl_in.write("timestamp_frame,sys_time\n")
 
         super().start_recording(output=str(output_files["video"]), **kwargs)
